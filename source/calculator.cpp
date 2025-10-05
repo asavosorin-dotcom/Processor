@@ -63,8 +63,12 @@ int sqr(Stack_t* stk) {
     return err;
 }
 
-void Calculate(Stack_t* stk1, StackElement_t* arr) {
+void Calculate(Processor_t* processor) {
     
+    StackElement_t* arr          = processor->code;
+    Stack_t         stk1         = processor->stack;
+    StackElement_t* arr_register = processor->registers;
+
     StackElement_t elem = 0;
     int i = 0;
 
@@ -74,53 +78,79 @@ void Calculate(Stack_t* stk1, StackElement_t* arr) {
             { 
                 i++;
                 elem = arr[i];
-                PUSH(*stk1, elem);
+                PUSH(stk1, elem);
                 i++;
             }
 
             else if (arr[i] == 4) 
             {
-                int err = POP(*stk1, elem);
-                (err != 0) ? printf("Empty Stack\n") : PRINTELEM(elem)
+                int err = POP(stk1, elem);
+                (err != 0) ? printf(RED "Empty Stack\n" RESET) : PRINTELEM(elem)
 
                 i++;
             }
 
             else if (arr[i] == 6) 
             {
-                ADD(*stk1);
+                ADD(stk1);
 
                 i++;
             }
 
             else if (arr[i] == 3) 
             {
-                SUB(*stk1);
+                SUB(stk1);
 
                 i++;
             }
 
             else if (arr[i] == 5) 
             {
-                DIV(*stk1);
+                DIV(stk1);
 
                 i++;
             }
 
             else if (arr[i] == 2) 
             {
-                MUL(*stk1);
+                MUL(stk1);
 
                 i++;
             } 
 
             else if (arr[i] == 7)
             {
-                SQRT(*stk1);
+                SQRT(stk1);
 
                 i++;
             }
             
+            else if (arr[i] == 8)
+            {
+                printf(BOLD_BLUE "Enter value:\n" RESET);
+                StackElement_t val = 0;
+                scanf(TYPEELEM, &val);
+                PUSH(stk1, val);
+
+                i++;
+            }
+
+            else if (arr[i] == POPR_G) 
+            {
+                StackElement_t val = 0;
+                POP(stk1, val);
+                i++;
+                arr_register[arr[i]] = val;
+                i++;
+            }
+
+            else if (arr[i] == PUSHR_G) 
+            {
+                i++;
+                // printf(TYPEELEM"\n", arr_register[arr[i]].register_value);
+                PUSH(stk1, arr_register[arr[i]]);
+                i++;
+            }
 
             // else if (arr[i] == 4) {
             //     SQRT(*stk1);

@@ -4,19 +4,6 @@
 
 //2 80 2 40 5
 
-// enum and arr of struct
-
-Command_t arr_command[8] = {
-                            "HLT",  4, HLT_G ,
-                            "PUSH", 5, PUSH_G,
-                            "MUL",  4, MUL_G ,
-                            "SUB",  4, SUB_G ,
-                            "OUT",  4, OUT_G ,
-                            "DIV",  4, DIV_G ,
-                            "ADD",  4, ADD_G , 
-                            "SQRT", 5, SQRT_G
-};
-
 void ConvertToBite(const char* commandfile) {
     
     Buffer struct_buffer = CreateBuffer(commandfile);
@@ -38,10 +25,13 @@ void ConvertToBite(const char* commandfile) {
 
     // StackDump(&stack, 1024);
 
+    int count_element = 0;
+
     while (*buffer != '\0') {
         
         while (isspace(*buffer)) {
-            buffer++;}
+            buffer++;
+        }
 
         StackElement_t elem = 0;        
 
@@ -58,20 +48,37 @@ void ConvertToBite(const char* commandfile) {
         // fprintf(fileerr, "strcmp = %d\n", strcmp(cmdStr, arr_command[i].command_name));
         // fprintf(fileerr, "arr_command = %s\n\n", arr_command[i].command_name);
         
+        count_element++;
 
         buffer += arr_command[i].command_size;
         PUSH(stack, arr_command[i].command_code);
 
-        if (i == 1) { // PUSH
+        if (i == PUSH_G) { // PUSH
             while (isspace(*buffer)) {
                 buffer++;
             }
             
-            sscanf(buffer, ELEMTYPE, &elem);
+            sscanf(buffer, TYPEELEM, &elem);
             // printf(ELEMTYPE "\n", elem);
             PUSH(stack, elem);
 
-        } else if (i == 0) { // HLT
+            count_element++;
+        }
+        
+        else if (i == PUSHR_G || i == POPR_G) { // проверка RAX
+            while (isspace(*buffer)) {
+                buffer++;
+            }
+
+            char name[10] = ""; 
+            sscanf(buffer, "%s", name);
+            fprintf(fileerr, "register name[1] - A = %d\n", name[1] - 'A');
+            PUSH(stack, name[1] - 'A');
+            buffer += 4;
+
+            count_element++;
+
+        } else if (i == HLT_G) { // HLT
             break;
         } 
 
@@ -86,18 +93,17 @@ void ConvertToBite(const char* commandfile) {
 
     // открывать файл с байт-кодом и печатать его туда
     FILE* bitecode = fopen("bitecode.txt", "w");
-    WriteBiteCodeFile(bitecode, stack.data);
+    fprintf(fileerr, "count_elem = %d\n", count_element);
+
+    WriteBiteCodeFile(bitecode, stack.data, count_element);
     fclose(bitecode);
 
     free(stack.data);
     // return stack.data;
 }
 
-void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr) {
-    while (*arr != 0) {
-        fprintf(bitecode, "%d ", *arr);
-        arr++;
+void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, int count_element) {
+    for (int i = 0; i < count_element; i++) {
+        fprintf(bitecode, "%d ", arr[i]);
     }
-
-    fprintf(bitecode, "%d ", *arr);
 }

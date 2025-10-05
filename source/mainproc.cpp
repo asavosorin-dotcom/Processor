@@ -2,12 +2,26 @@
 
 
 int main() {
-    Stack_t stk1 = {};
-    INITSTACK(stk1, 10);
+    Processor_t processor = {};
+    ProcessorCtor(&processor); 
+    
+    CALCULATE(processor);
 
-    StackElement_t* arr = TextConvertToBite("bitecode.txt");
-    CALCULATE(stk1, arr);
+    ProcessorDtor(&processor);
+}
 
-    free(arr);
-    DTOR(stk1);
+void ProcessorCtor(Processor_t* processor) {
+    INITSTACK(processor->stack, 10);
+
+    processor->code = TextConvertToBite("bitecode.txt");
+
+    for (int i = 0; i < 8; i++)
+        processor->registers[0] = 0;
+    
+}
+
+void ProcessorDtor(Processor_t* processor) 
+{
+    free(processor->code);
+    DTOR(processor->stack);
 }
