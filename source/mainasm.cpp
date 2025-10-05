@@ -9,5 +9,10 @@ int main() {
     //     printf("%d ", arr[i]);
     // }
 
+    // for (int i = 0; i < 7; i++) {
+    //     printf("i = %d\n", i);
+    //     printf("command_name = %s\n", arr_command[i].command_name);
+    // }
+
     fclose(fileerr);
 }

@@ -70,43 +70,57 @@ void Calculate(Stack_t* stk1, StackElement_t* arr) {
 
     while (1) {
             
-            if (arr[i] == 1) { 
+            if (arr[i] == 1) 
+            { 
                 i++;
                 elem = arr[i];
                 PUSH(*stk1, elem);
                 i++;
             }
 
-            else if (arr[i] == 4) {
+            else if (arr[i] == 4) 
+            {
                 int err = POP(*stk1, elem);
                 (err != 0) ? printf("Empty Stack\n") : PRINTELEM(elem)
 
                 i++;
             }
 
-            else if (arr[i] == 6) {
+            else if (arr[i] == 6) 
+            {
                 ADD(*stk1);
 
                 i++;
             }
 
-            else if (arr[i] == 3) {
+            else if (arr[i] == 3) 
+            {
                 SUB(*stk1);
 
                 i++;
             }
 
-            else if (arr[i] == 5) {
+            else if (arr[i] == 5) 
+            {
                 DIV(*stk1);
 
                 i++;
             }
 
-            else if (arr[i] == 2) {
+            else if (arr[i] == 2) 
+            {
                 MUL(*stk1);
 
                 i++;
+            } 
+
+            else if (arr[i] == 7)
+            {
+                SQRT(*stk1);
+
+                i++;
             }
+            
 
             // else if (arr[i] == 4) {
             //     SQRT(*stk1);

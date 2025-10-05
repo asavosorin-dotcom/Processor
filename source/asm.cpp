@@ -6,7 +6,16 @@
 
 // enum and arr of struct
 
-
+Command_t arr_command[8] = {
+                            "HLT",  4, HLT_G ,
+                            "PUSH", 5, PUSH_G,
+                            "MUL",  4, MUL_G ,
+                            "SUB",  4, SUB_G ,
+                            "OUT",  4, OUT_G ,
+                            "DIV",  4, DIV_G ,
+                            "ADD",  4, ADD_G , 
+                            "SQRT", 5, SQRT_G
+};
 
 void ConvertToBite(const char* commandfile) {
     
@@ -30,62 +39,44 @@ void ConvertToBite(const char* commandfile) {
     // StackDump(&stack, 1024);
 
     while (*buffer != '\0') {
+        
         while (isspace(*buffer)) {
             buffer++;}
 
         StackElement_t elem = 0;        
 
         sscanf(buffer, "%s", cmdStr);
-        // printf("%s\n", cmdStr);
+        // fprintf(fileerr, "cmdStr = %s\n", cmdStr);
+        
+        int i = 0;
 
-        if (strcmp(cmdStr, "PUSH") == 0) {
-            buffer += 5;
-            PUSH(stack, 1);
+        while (strcmp(cmdStr, arr_command[i].command_name) != 0) {
+            // fprintf(fileerr, "i = %d\n", i);
+            i++;
+        }
+            
+        // fprintf(fileerr, "strcmp = %d\n", strcmp(cmdStr, arr_command[i].command_name));
+        // fprintf(fileerr, "arr_command = %s\n\n", arr_command[i].command_name);
+        
 
+        buffer += arr_command[i].command_size;
+        PUSH(stack, arr_command[i].command_code);
+
+        if (i == 1) { // PUSH
             while (isspace(*buffer)) {
                 buffer++;
             }
-
+            
             sscanf(buffer, ELEMTYPE, &elem);
             // printf(ELEMTYPE "\n", elem);
             PUSH(stack, elem);
-            
-            buffer = strchr(buffer, '\n');
-        }
 
-        else if (strcmp(cmdStr, "MUL") == 0) {
-            buffer += 4;
-            PUSH(stack, 2);
-        }
-
-        else if (strcmp(cmdStr, "SUB") == 0) {
-            buffer += 4;
-            PUSH(stack, 3);
-        }
-
-        else if (strcmp(cmdStr, "OUT") == 0) {
-            buffer += 4;
-            PUSH(stack, 4);
-        }
-
-        else if (strcmp(cmdStr, "DIV") == 0) {
-            buffer += 4;
-            PUSH(stack, 5);
-        }
-
-        else if (strcmp(cmdStr, "ADD") == 0) {
-            buffer += 4;
-            PUSH(stack, 6);
-        }
-
-        else if (strcmp(cmdStr, "HLT") == 0) {
-            // buffer += 4;
-            PUSH(stack, 0);
+        } else if (i == 0) { // HLT
             break;
-        }
+        } 
 
-        // while (isspace(*buffer)) {
-        //     buffer++;}
+        buffer = strchr(buffer, '\n');
+
     }
 
     // PRINTSTACK(stack);
@@ -104,9 +95,9 @@ void ConvertToBite(const char* commandfile) {
 
 void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr) {
     while (*arr != 0) {
-        fprintf(bitecode,"%d ", *arr);
+        fprintf(bitecode, "%d ", *arr);
         arr++;
     }
 
-    fprintf(bitecode,"%d ", *arr);
+    fprintf(bitecode, "%d ", *arr);
 }
