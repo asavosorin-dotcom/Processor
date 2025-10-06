@@ -4,6 +4,8 @@
 
 //2 80 2 40 5
 
+extern Command_t arr_command[50];
+
 void ConvertToBite(const char* commandfile) {
     
     Buffer struct_buffer = CreateBuffer(commandfile);
@@ -73,7 +75,7 @@ void ConvertToBite(const char* commandfile) {
             char name[10] = ""; 
             sscanf(buffer, "%s", name);
             fprintf(fileerr, "register name[1] - A = %d\n", name[1] - 'A');
-            PUSH(stack, name[1] - 'A');
+            PUSH(stack, name[1] - 'A' + 1);
             buffer += 4;
 
             count_element++;

@@ -21,6 +21,7 @@ StackElement_t* TextConvertToBite(const char* filename) {
         sscanf(buffer, TYPEELEM, &elem);
         // printf("elem = "TYPEELEM"\n", elem);
         PUSH(arr, elem);
+        // PRINTELEM(elem);
 
         if (elem == 0)
             break;

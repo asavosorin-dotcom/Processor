@@ -1,13 +1,21 @@
 #include "mainproc.h"
 
+FILE* fileerr = fopen("Logfile1.log", "w");
 
 int main() {
+    // fprintf(fileerr, "DKSAVNOADKSNV;LKASDNV");
+    
     Processor_t processor = {};
     ProcessorCtor(&processor); 
     
+    StackElement_t* point_code = processor.code;
+
     CALCULATE(processor);
 
+    processor.code = point_code;
+
     ProcessorDtor(&processor);
+    fclose(fileerr);
 }
 
 void ProcessorCtor(Processor_t* processor) {
@@ -25,3 +33,4 @@ void ProcessorDtor(Processor_t* processor)
     free(processor->code);
     DTOR(processor->stack);
 }
+

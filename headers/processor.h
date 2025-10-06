@@ -25,12 +25,4 @@ typedef struct {
     // void (*command_func) (Processor_t*);
 } Command_t;
 
-typedef struct {
-    Stack_t stack;
-    StackElement_t* code;
-    StackElement_t registers[8];
-} Processor_t;
-
-extern Command_t  arr_command[50];
-
 #endif

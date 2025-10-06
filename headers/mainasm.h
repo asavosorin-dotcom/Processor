@@ -5,6 +5,7 @@
 
 #include "asm.h"
 #include "stack.h"
-#include "calculator.h"
+#include "processor.h"
+
 
 #endif
