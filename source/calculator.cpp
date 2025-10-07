@@ -17,12 +17,12 @@ Processor_command_t arr_command[50] = {
                             IN_G   ,  ProcessorIn   ,
                             POPR_G ,  ProcessorPopr ,
                             PUSHR_G,  ProcessorPushr,
-                            JB_G   ,  ProcessorJumpB,
-                            JBE_G  ,  ProcessorJumpBE,
-                            JA_G   ,  ProcessorJumpA ,
-                            JAE_G  ,  ProcessorJumpAE,
-                            JE_G   ,  ProcessorJumpE,
-                            JNE_G  ,  ProcessorJumpNE,
+                            JB_G   ,  ProcessorJump_B,
+                            JBE_G  ,  ProcessorJump_BE,
+                            JA_G   ,  ProcessorJump_A ,
+                            JAE_G  ,  ProcessorJump_AE,
+                            JE_G   ,  ProcessorJump_E,
+                            JNE_G  ,  ProcessorJump_NE,
 };
 
 int ProcessorPush(Processor_t* processor) 
@@ -189,139 +189,31 @@ int ProcessorPushr(Processor_t* processor)
     return err;
 }
 
-//--------------------------------------------------------------JUMP-----------------------------------------------------
-
-// #define IMPL_JUMP(name, op_comparison) int ProcessorJump_#name(Processor_t* processor) \
-// {                                                                                      \
-//     int err = 0;                                                                       \
-//                                                                                         \
-//     StackElement_t elem1 = 0;\
-//     err = POP(processor->stack, elem1);\
-// \
-//     StackElement_t elem2 = 0;\
-//     err = POP(processor->stack, elem2);\
-// \
-//     if (elem2 < elem1)\
-//         processor->counter = processor->code[processor->counter + 1];\
-//     else\
-//         processor->counter += 2;\
-// \
-//     return err;\
-// }
-
-int ProcessorJumpB(Processor_t* processor)
-{
-    int err = 0;
-
-    StackElement_t elem1 = 0;
-    err = POP(processor->stack, elem1);
-
-    StackElement_t elem2 = 0;
-    err = POP(processor->stack, elem2);
-
-    if (elem2 < elem1)
-        processor->counter = processor->code[processor->counter + 1];
-    else
-        processor->counter += 2;
-
-    // fprintf(fileerr, TYPEELEM "\n", processor->code[processor->counter]);    
-    return err;
+//--------------------------------------------------------------JUMP-----------------------------------------------------------------
+#define IMPL_JUMP(name, op_comparison) int ProcessorJump_##name(Processor_t* processor) \
+{                                                                                       \
+    int err = 0;                                                                        \
+                                                                                        \
+    StackElement_t elem1 = 0;                                                           \
+    err = POP(processor->stack, elem1);                                                 \
+                                                                                        \
+    StackElement_t elem2 = 0;                                                           \
+    err = POP(processor->stack, elem2);                                                 \
+                                                                                        \
+    if (elem2 op_comparison elem1)                                                      \
+        processor->counter = processor->code[processor->counter + 1];                   \
+    else                                                                                \
+        processor->counter += 2;                                                        \
+                                                                                        \
+    return err;                                                                         \
 }
 
-int ProcessorJumpBE(Processor_t* processor)
-{
-    int err = 0;
-
-    StackElement_t elem1 = 0;
-    err = POP(processor->stack, elem1);
-
-    StackElement_t elem2 = 0;
-    err = POP(processor->stack, elem2);
-
-    if (elem2 <= elem1)
-        processor->counter = processor->code[processor->counter + 1];
-    else
-        processor->counter += 2;
-
-    // fprintf(fileerr, TYPEELEM "\n", processor->code[processor->counter]);    
-    return err;
-}
-
-int ProcessorJumpA(Processor_t* processor)
-{
-    int err = 0;
-
-    StackElement_t elem1 = 0;
-    err = POP(processor->stack, elem1);
-
-    StackElement_t elem2 = 0;
-    err = POP(processor->stack, elem2);
-
-    if (elem2 > elem1)
-        processor->counter = processor->code[processor->counter + 1];
-    else
-        processor->counter += 2;
-
-    // fprintf(fileerr, TYPEELEM "\n", processor->code[processor->counter]);    
-    return err;
-}
-
-int ProcessorJumpAE(Processor_t* processor)
-{
-    int err = 0;
-
-    StackElement_t elem1 = 0;
-    err = POP(processor->stack, elem1);
-
-    StackElement_t elem2 = 0;
-    err = POP(processor->stack, elem2);
-
-    if (elem2 >= elem1)
-        processor->counter = processor->code[processor->counter + 1];
-    else
-        processor->counter += 2;
-
-    // fprintf(fileerr, TYPEELEM "\n", processor->code[processor->counter]);    
-    return err;
-}
-
-int ProcessorJumpE(Processor_t* processor)
-{
-    int err = 0;
-
-    StackElement_t elem1 = 0;
-    err = POP(processor->stack, elem1);
-
-    StackElement_t elem2 = 0;
-    err = POP(processor->stack, elem2);
-
-    if (elem2 == elem1)
-        processor->counter = processor->code[processor->counter + 1];
-    else
-        processor->counter += 2;
-
-    // fprintf(fileerr, TYPEELEM "\n", processor->code[processor->counter]);    
-    return err;
-}
-
-int ProcessorJumpNE(Processor_t* processor)
-{
-    int err = 0;
-
-    StackElement_t elem1 = 0;
-    err = POP(processor->stack, elem1);
-
-    StackElement_t elem2 = 0;
-    err = POP(processor->stack, elem2);
-
-    if (elem2 != elem1)
-        processor->counter = processor->code[processor->counter + 1];
-    else
-        processor->counter += 2;
-
-    // fprintf(fileerr, TYPEELEM "\n", processor->code[processor->counter]);    
-    return err;
-}
+IMPL_JUMP(B, <)
+IMPL_JUMP(BE, <=)
+IMPL_JUMP(A, >)
+IMPL_JUMP(AE, >=)
+IMPL_JUMP(E, ==)
+IMPL_JUMP(NE, !=)
 
 //------------------------------------------------------------------------------------------------------------------------------------
 

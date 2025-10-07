@@ -52,12 +52,12 @@ int ProcessorSqr   (Processor_t* processor);
 int ProcessorIn    (Processor_t* processor);
 int ProcessorPopr  (Processor_t* processor);
 int ProcessorPushr (Processor_t* processor);
-int ProcessorJumpB (Processor_t* processor);
-int ProcessorJumpBE(Processor_t* processor);
-int ProcessorJumpA (Processor_t* processor);
-int ProcessorJumpAE(Processor_t* processor);
-int ProcessorJumpE (Processor_t* processor);
-int ProcessorJumpNE(Processor_t* processor);
+int ProcessorJump_B (Processor_t* processor);
+int ProcessorJump_BE(Processor_t* processor);
+int ProcessorJump_A (Processor_t* processor);
+int ProcessorJump_AE(Processor_t* processor);
+int ProcessorJump_E (Processor_t* processor);
+int ProcessorJump_NE(Processor_t* processor);
 
 void Calculate(Processor_t* processor);
 
