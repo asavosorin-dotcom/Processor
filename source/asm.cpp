@@ -55,7 +55,7 @@ void ConvertToBite(const char* commandfile) {
         buffer += arr_command[i].command_size;
         PUSH(stack, arr_command[i].command_code);
 
-        if (i == PUSH_G) { // PUSH
+        if (i == PUSH_G || (i >= JB_G && i <= JNE_G)) { // PUSH
             while (isspace(*buffer)) {
                 buffer++;
             }

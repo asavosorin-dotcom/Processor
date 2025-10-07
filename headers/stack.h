@@ -7,7 +7,6 @@
 
 #include "Logfile.h"
 
-
 // #define DEBUG
 // #define HASH
 // #define CANARY
@@ -75,15 +74,16 @@ typedef struct {
     
 } Stack_t;
 
-int StackCtor(Stack_t* stk, int capasity, int line, const char* stackname, const char* funcname);
-int StackPush(Stack_t* stk, StackElement_t elem, int line);
-int StackPop(Stack_t* stk, StackElement_t* elem, int line);
-int StackDtor(Stack_t* stk, int line);
-int StackDump(Stack_t* stk, int err);
-int StackTop(Stack_t* stk, StackElement_t* elem, int line);
-int StackVerify(Stack_t* stk, int line, const char* funcname);
+int StackCtor   (Stack_t* stk, int capasity, int line, const char* stackname, const char* funcname);
+int StackPush   (Stack_t* stk, StackElement_t elem, int line);
+int StackPop    (Stack_t* stk, StackElement_t* elem, int line);
+int StackDtor   (Stack_t* stk, int line);
+int StackDump   (Stack_t* stk, int err);
+int StackTop    (Stack_t* stk, StackElement_t* elem, int line);
+int StackVerify (Stack_t* stk, int line, const char* funcname);
 int StackRealloc(Stack_t* stk, int line);
-int StackPrint(Stack_t* stk, int line);
+int StackPrint  (Stack_t* stk, int line);
+
 void ReallocArrPointData(void);
 
 

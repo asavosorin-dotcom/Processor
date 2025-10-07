@@ -16,6 +16,12 @@ enum COMMANDS{
     IN_G    = 8 ,
     POPR_G  = 9 ,
     PUSHR_G = 10,
+    JB_G    = 11,
+    JBE_G   = 12,
+    JA_G    = 13,
+    JAE_G   = 14,
+    JE_G    = 15,
+    JNE_G   = 16 
 };
 
 typedef struct {

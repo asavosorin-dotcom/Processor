@@ -25,6 +25,8 @@ void ProcessorCtor(Processor_t* processor) {
 
     for (int i = 0; i < 8; i++)
         processor->registers[0] = 0;
+
+    processor->counter = 0;
     
 }
 

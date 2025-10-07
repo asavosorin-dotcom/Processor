@@ -3,7 +3,7 @@
 FILE* fileerr = fopen("Logfile.log", "w");
 
 int main() {
-    ConvertToBite("commandfile.txt");
+    ConvertToBite("commandfile123.txt");
 
     // for (int i = 0; arr[i] != 0; i++) {
     //     printf("%d ", arr[i]);

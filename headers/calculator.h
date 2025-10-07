@@ -22,12 +22,19 @@ enum COMMANDS{
     IN_G    = 8 ,
     POPR_G  = 9 ,
     PUSHR_G = 10,
+    JB_G    = 11,
+    JBE_G   = 12,
+    JA_G    = 13,
+    JAE_G   = 14,
+    JE_G    = 15,
+    JNE_G   = 16 
 };
 
 typedef struct {
     Stack_t         stack;
     StackElement_t* code;
     StackElement_t  registers[8];
+    size_t          counter;
 } Processor_t;
 
 typedef struct {
@@ -35,16 +42,22 @@ typedef struct {
     int (*func) (Processor_t*);
 } Processor_command_t;
 
-int ProcessorPush (Processor_t* processor);
-int ProcessorOut  (Processor_t* processor);
-int ProcessorAdd  (Processor_t* processor);
-int ProcessorSub  (Processor_t* processor);
-int ProcessorMul  (Processor_t* processor);
-int ProcessorDiv  (Processor_t* processor);
-int ProcessorSqr  (Processor_t* processor);
-int ProcessorIn   (Processor_t* processor);
-int ProcessorPopr (Processor_t* processor);
-int ProcessorPushr(Processor_t* processor);
+int ProcessorPush  (Processor_t* processor);
+int ProcessorOut   (Processor_t* processor);
+int ProcessorAdd   (Processor_t* processor);
+int ProcessorSub   (Processor_t* processor);
+int ProcessorMul   (Processor_t* processor);
+int ProcessorDiv   (Processor_t* processor);
+int ProcessorSqr   (Processor_t* processor);
+int ProcessorIn    (Processor_t* processor);
+int ProcessorPopr  (Processor_t* processor);
+int ProcessorPushr (Processor_t* processor);
+int ProcessorJumpB (Processor_t* processor);
+int ProcessorJumpBE(Processor_t* processor);
+int ProcessorJumpA (Processor_t* processor);
+int ProcessorJumpAE(Processor_t* processor);
+int ProcessorJumpE (Processor_t* processor);
+int ProcessorJumpNE(Processor_t* processor);
 
 void Calculate(Processor_t* processor);
 
