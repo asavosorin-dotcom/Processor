@@ -35,4 +35,3 @@ void ProcessorDtor(Processor_t* processor)
     free(processor->code);
     DTOR(processor->stack);
 }
-

@@ -33,8 +33,6 @@ int ProcessorPush(Processor_t* processor)
 
     processor->counter++;
 
-
-
     StackElement_t elem = processor->code[processor->counter];
     PUSH(processor->stack, elem);
 
@@ -47,7 +45,10 @@ int ProcessorPush(Processor_t* processor)
 
 int ProcessorOut(Processor_t* processor) 
 {
+    assert(processor);
+    
     StackElement_t elem = processor->code[processor->counter];
+
     int err = 0;
     err = POP(processor->stack, elem);
     (err != 0) ? printf(RED "Empty Stack\n" RESET) : PRINTELEM(elem)
@@ -63,10 +64,12 @@ int ProcessorOut(Processor_t* processor)
 
 int ProcessorAdd(Processor_t* processor) 
 {    
+    assert(processor);   
+    
     StackElement_t elem1 = 0;
-    int err = POP(processor->stack, elem1);
-
     StackElement_t elem2 = 0;
+    
+    int err = POP(processor->stack, elem1);
     err |= POP(processor->stack, elem2);
 
     err |= PUSH(processor->stack, elem1 + elem2);
@@ -78,10 +81,13 @@ int ProcessorAdd(Processor_t* processor)
 
 int ProcessorSub(Processor_t* processor) 
 {
+    assert(processor);
+    
     StackElement_t elem1 = 0;
+    StackElement_t elem2 = 0;
+    
     int err = POP(processor->stack, elem1);
 
-    StackElement_t elem2 = 0;
     err |= POP(processor->stack, elem2);
 
     err |= PUSH(processor->stack, elem2 - elem1);
@@ -93,11 +99,13 @@ int ProcessorSub(Processor_t* processor)
 
 int ProcessorMul(Processor_t* processor) 
 {
-    
+    assert(processor);
+
     StackElement_t elem1 = 0;
+    StackElement_t elem2 = 0;
+    
     int err = POP(processor->stack, elem1);
 
-    StackElement_t elem2 = 0;
     err |= POP(processor->stack, elem2);
 
     err |= PUSH(processor->stack, elem2 * elem1);
@@ -111,12 +119,14 @@ int ProcessorMul(Processor_t* processor)
 
 int ProcessorDiv(Processor_t* processor) 
 {
+    assert(processor);
     // printf()
     // PRINTSTACK(processor->stack);
     StackElement_t elem1 = 0;
+    StackElement_t elem2 = 0;
+
     int err = POP(processor->stack, elem1);
 
-    StackElement_t elem2 = 0;
     err |= POP(processor->stack, elem2);
 
     err |= PUSH(processor->stack, elem2 / elem1);
@@ -128,8 +138,12 @@ int ProcessorDiv(Processor_t* processor)
 
 int ProcessorSqr(Processor_t* processor) 
 {    
+    assert(processor);
+    
     StackElement_t elem1 = 0;
+
     int err = POP(processor->stack, elem1);
+
     elem1 = (StackElement_t) floor(sqrt(elem1 * pow(10, 6))) / 1000;
 
     err |= PUSH(processor->stack, elem1);
@@ -141,6 +155,8 @@ int ProcessorSqr(Processor_t* processor)
 
 int ProcessorIn(Processor_t* processor) 
 {
+    assert(processor);
+    
     int err = 0;
     
     printf(BOLD_BLUE "Enter value:\n" RESET);
@@ -156,6 +172,8 @@ int ProcessorIn(Processor_t* processor)
 
 int ProcessorPopr(Processor_t* processor) 
 {
+    assert(processor);
+    
     int err = 0;
     
     StackElement_t val = 0;
@@ -175,6 +193,8 @@ int ProcessorPopr(Processor_t* processor)
 
 int ProcessorPushr(Processor_t* processor) 
 {
+    assert(processor);
+
     int err = 0;
     
     processor->counter++;
@@ -192,6 +212,7 @@ int ProcessorPushr(Processor_t* processor)
 //--------------------------------------------------------------JUMP-----------------------------------------------------------------
 #define IMPL_JUMP(name, op_comparison) int ProcessorJump_##name(Processor_t* processor) \
 {                                                                                       \
+    assert(processor);                                                                  \
     int err = 0;                                                                        \
                                                                                         \
     StackElement_t elem1 = 0;                                                           \
@@ -208,13 +229,12 @@ int ProcessorPushr(Processor_t* processor)
     return err;                                                                         \
 }
 
-IMPL_JUMP(B, <)
+IMPL_JUMP(B , < )
 IMPL_JUMP(BE, <=)
-IMPL_JUMP(A, >)
+IMPL_JUMP(A , > )
 IMPL_JUMP(AE, >=)
-IMPL_JUMP(E, ==)
+IMPL_JUMP(E , ==)
 IMPL_JUMP(NE, !=)
-
 //------------------------------------------------------------------------------------------------------------------------------------
 
 void Calculate(Processor_t* processor) {
