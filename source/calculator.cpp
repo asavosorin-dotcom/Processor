@@ -7,21 +7,21 @@
 
 Processor_command_t arr_command[50] = { 
                             HLT_G  ,  0,
-                            PUSH_G ,  ProcessorPush ,
-                            MUL_G  ,  ProcessorMul  ,
-                            SUB_G  ,  ProcessorSub  ,
-                            OUT_G  ,  ProcessorOut  ,
-                            DIV_G  ,  ProcessorDiv  ,
-                            ADD_G  ,  ProcessorAdd  ,
-                            SQRT_G ,  ProcessorSqr  , 
-                            IN_G   ,  ProcessorIn   ,
-                            POPR_G ,  ProcessorPopr ,
-                            PUSHR_G,  ProcessorPushr,
-                            JB_G   ,  ProcessorJump_B,
+                            PUSH_G ,  ProcessorPush   ,
+                            MUL_G  ,  ProcessorMul    ,
+                            SUB_G  ,  ProcessorSub    ,
+                            OUT_G  ,  ProcessorOut    ,
+                            DIV_G  ,  ProcessorDiv    ,  
+                            ADD_G  ,  ProcessorAdd    , 
+                            SQRT_G ,  ProcessorSqr    , 
+                            IN_G   ,  ProcessorIn     ,
+                            POPR_G ,  ProcessorPopr   ,
+                            PUSHR_G,  ProcessorPushr  ,
+                            JB_G   ,  ProcessorJump_B ,
                             JBE_G  ,  ProcessorJump_BE,
                             JA_G   ,  ProcessorJump_A ,
                             JAE_G  ,  ProcessorJump_AE,
-                            JE_G   ,  ProcessorJump_E,
+                            JE_G   ,  ProcessorJump_E ,
                             JNE_G  ,  ProcessorJump_NE,
 };
 
@@ -60,8 +60,6 @@ int ProcessorOut(Processor_t* processor)
     return err;
 }
  
-
-
 int ProcessorAdd(Processor_t* processor) 
 {    
     assert(processor);   
@@ -237,7 +235,8 @@ IMPL_JUMP(E , ==)
 IMPL_JUMP(NE, !=)
 //------------------------------------------------------------------------------------------------------------------------------------
 
-void Calculate(Processor_t* processor) {
+void Calculate(Processor_t* processor) 
+{
     
     StackElement_t* arr          = processor->code;
     StackElement_t* arr_register = processor->registers;

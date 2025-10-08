@@ -10,8 +10,8 @@ Buffer CreateBuffer(const char* filename) {
 
     assert(file);
 
-    size_t numOfElem = SizeOfFile(filename) / sizeof(char);
-    char* buffer = (char* ) calloc(numOfElem + 2, sizeof(char));
+    size_t numOfElem    = SizeOfFile(filename) / sizeof(char);
+    char* buffer        = (char* ) calloc(numOfElem + 2, sizeof(char));
     size_t numOfElemNew = fread(buffer + 1, sizeof(char), numOfElem + 1, file);
 
     // point_struct->buff = buffer;
@@ -19,6 +19,32 @@ Buffer CreateBuffer(const char* filename) {
 
     point_struct.buff = buffer;
     point_struct.buff_size = numOfElemNew;  
+
+    fclose(file);
+
+    return point_struct;
+}
+
+BufferBin CreateBufferBinary(const char* filename) {
+    
+    // Buffer* point_struct = (Buffer* ) calloc(1, sizeof(Buffer));
+    BufferBin point_struct = {0};
+    // assert(struct_buf);
+
+    FILE* file = fopen(filename, "rb");
+
+    assert(file);
+
+    size_t numOfElem = SizeOfFile(filename) / sizeof(int);
+    int*   buffer    = (int* ) calloc(numOfElem + 1, sizeof(int));
+
+    fread(buffer, sizeof(int), numOfElem + 1, file);
+
+    // point_struct->buff = buffer;
+    // point_struct->buff_size = numOfElemNew;
+
+    point_struct.buff = buffer;
+    point_struct.buff_size = numOfElem;  
 
     fclose(file);
 

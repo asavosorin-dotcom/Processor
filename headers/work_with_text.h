@@ -18,11 +18,17 @@ typedef struct {
     size_t buff_size;
 } Buffer;
 
+typedef struct {
+    int* buff;
+    size_t buff_size;
+} BufferBin;
+
 size_t SizeOfFile(const char* filename);
 size_t Maxlen(char* buffer);
 size_t CountStr(const char* buffer);
 void OutPutBuf(char* buffer, FILE* fileout, size_t numOfElemNew);
 
-Buffer CreateBuffer(const char* filename);
+Buffer CreateBuffer       (const char* filename);
+BufferBin CreateBufferBinary (const char* filename);
 
 #endif

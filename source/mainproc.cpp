@@ -21,13 +21,12 @@ int main() {
 void ProcessorCtor(Processor_t* processor) {
     INITSTACK(processor->stack, 10);
 
-    processor->code = TextConvertToBite("bitecode.txt");
+    processor->code = TextConvertToBite("bitecode.asm");
 
     for (int i = 0; i < 8; i++)
         processor->registers[0] = 0;
 
     processor->counter = 0;
-    
 }
 
 void ProcessorDtor(Processor_t* processor) 

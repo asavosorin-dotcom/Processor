@@ -20,8 +20,11 @@ proc: $(OBJECTS2)
 %.o: $(SOURCE_DIR)%.cpp
 	g++ $(FLAGS) -c $< -o $@
 
+clean:
+	rm -f *.o 
+
 cleanasm:
-	rm -f *.o asm
+	rm -f asm
 
 cleanproc:
-	rm -f *.o proc
+	rm -f proc

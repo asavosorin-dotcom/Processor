@@ -42,16 +42,16 @@ typedef struct {
     int (*func) (Processor_t*);
 } Processor_command_t;
 
-int ProcessorPush  (Processor_t* processor);
-int ProcessorOut   (Processor_t* processor);
-int ProcessorAdd   (Processor_t* processor);
-int ProcessorSub   (Processor_t* processor);
-int ProcessorMul   (Processor_t* processor);
-int ProcessorDiv   (Processor_t* processor);
-int ProcessorSqr   (Processor_t* processor);
-int ProcessorIn    (Processor_t* processor);
-int ProcessorPopr  (Processor_t* processor);
-int ProcessorPushr (Processor_t* processor);
+int ProcessorPush   (Processor_t* processor);
+int ProcessorOut    (Processor_t* processor);
+int ProcessorAdd    (Processor_t* processor);
+int ProcessorSub    (Processor_t* processor);
+int ProcessorMul    (Processor_t* processor);
+int ProcessorDiv    (Processor_t* processor);
+int ProcessorSqr    (Processor_t* processor);
+int ProcessorIn     (Processor_t* processor);
+int ProcessorPopr   (Processor_t* processor);
+int ProcessorPushr  (Processor_t* processor);
 int ProcessorJump_B (Processor_t* processor);
 int ProcessorJump_BE(Processor_t* processor);
 int ProcessorJump_A (Processor_t* processor);

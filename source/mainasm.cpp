@@ -8,7 +8,8 @@ int main() {
     for (int i = 0; i < 10; i++)
         label[i] = -1;
     
-    Compile("commandfile123.asm", label);
+    Compile("commandfiletest.asm", label);
+    Compile("commandfiletest.asm", label);
 
     // for (int i = 0; arr[i] != 0; i++) {
     //     printf("%d ", arr[i]);
