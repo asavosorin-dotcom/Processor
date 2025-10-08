@@ -2,7 +2,13 @@
 
 //2 542 3 2 7 1 4 6 3
 
-//2 80 2 40 5
+//2 80 2 40 54
+
+//union
+//enum type
+
+//PUSH 80 ;comment\n
+//
 
 Command_t arr_command[50] = {
                             "HLT"  , 4, HLT_G  , 
@@ -24,7 +30,7 @@ Command_t arr_command[50] = {
                             "JNE"  , 4, JNE_G  
 };
 
-void ConvertToBite(const char* commandfile) {
+void Compile(const char* commandfile, int* label) {
     
     Buffer struct_buffer = CreateBuffer(commandfile);
     char* buffer = struct_buffer.buff;
@@ -37,7 +43,6 @@ void ConvertToBite(const char* commandfile) {
 //-------------------------------------------------------------------------------------------------------------------------------------
     char* cmdStr = (char* ) calloc(10, sizeof(char));
 //-------------------------------------------------------------------------------------------------------------------------------------
-
 
     // OutPutBuf(buffer, stdout, struct_buffer.buff_size + 1);
     Stack_t stack = {};
@@ -55,10 +60,25 @@ void ConvertToBite(const char* commandfile) {
 
         StackElement_t elem = 0;        
 
-        sscanf(buffer, "%s", cmdStr);
+        sscanf(buffer, "%s", cmdStr); //Проверка
         // fprintf(fileerr, "cmdStr = %s\n", cmdStr);
         
+        if (cmdStr[0] == ':') 
+        {
+            puts(cmdStr);
+            int label_index = atoi(cmdStr + 1);
+            label[label_index] = count_element;
+
+            printf("label[%d] = %d\n", label_index, count_element);
+
+            buffer = strchr(buffer, '\n');
+        }
+
+        sscanf(buffer, "%s", cmdStr); //Проверка
+
         int i = 0;
+        printf("cmdStr = ");
+        puts(cmdStr);
 
         while (strcmp(cmdStr, arr_command[i].command_name) != 0) {
             // fprintf(fileerr, "i = %d\n", i);
@@ -73,7 +93,7 @@ void ConvertToBite(const char* commandfile) {
         buffer += arr_command[i].command_size;
         PUSH(stack, arr_command[i].command_code);
 
-        if (i == PUSH_G || (i >= JB_G && i <= JNE_G)) { // PUSH
+        if (i == PUSH_G) { // PUSH
             while (isspace(*buffer)) {
                 buffer++;
             }
@@ -85,6 +105,29 @@ void ConvertToBite(const char* commandfile) {
             count_element++;
         }
         
+        if (i >= JB_G && i <= JNE_G) {
+            while (isspace(*buffer)) {
+                buffer++;
+            }
+
+            char label_name[4] = "";
+            sscanf(buffer, "%s", label_name);
+
+            // printf("label_name = ");
+            // puts(label_name);
+
+            int label_index = 0;
+            label_index = atoi(label_name + 1);
+
+            printf("%d\n", label_index);
+            // printf(ELEMTYPE "\n", elem);
+            printf("elem = ");
+            PRINTELEM(label[label_index]);
+            PUSH(stack, label[label_index]);
+
+            count_element++;
+        }
+
         else if (i == PUSHR_G || i == POPR_G) { // проверка RAX
             while (isspace(*buffer)) {
                 buffer++;
@@ -112,7 +155,7 @@ void ConvertToBite(const char* commandfile) {
     free(cmdStr); 
 
     // открывать файл с байт-кодом и печатать его туда
-    FILE* bitecode = fopen("bitecode.txt", "w");
+    FILE* bitecode = fopen("bitecode.asm", "w");
     fprintf(fileerr, "count_elem = %d\n", count_element);
 
     WriteBiteCodeFile(bitecode, stack.data, count_element);
@@ -123,7 +166,9 @@ void ConvertToBite(const char* commandfile) {
 }
 
 void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, int count_element) {
-    for (int i = 0; i < count_element; i++) {
-        fprintf(bitecode, "%d ", arr[i]);
-    }
+    // for (int i = 0; i < count_element; i++) {
+        // fprintf(bitecode, "%d ", arr[i]);
+    // }
+    fwrite(arr, count_element, sizeof(StackElement_t), bitecode);
+
 }

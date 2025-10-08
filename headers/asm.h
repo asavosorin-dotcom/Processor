@@ -7,7 +7,7 @@
 #include "work_with_text.h"
 #include "stack.h"
 
-void ConvertToBite(const char* commandfile);
+void Compile          (const char* commandfile, int* label);
 void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, int count_element);
 
 enum COMMANDS{
