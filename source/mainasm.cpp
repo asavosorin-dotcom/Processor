@@ -8,8 +8,8 @@ int main() {
     for (int i = 0; i < 10; i++)
         label[i] = -1;
     
-    Compile("commandfiletest.asm", label);
-    Compile("commandfiletest.asm", label);
+    Compile("commandfile.asm", label);
+    Compile("commandfile.asm", label);
 
     // for (int i = 0; arr[i] != 0; i++) {
     //     printf("%d ", arr[i]);
@@ -22,4 +22,5 @@ int main() {
     // }
 
     fclose(fileerr);
+    printf(BOLD_GREEN "SUCCES!\n" RESET);
 }

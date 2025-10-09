@@ -16,6 +16,8 @@ int main() {
 
     ProcessorDtor(&processor);
     fclose(fileerr);
+
+    printf(BOLD_GREEN "SUCCES!\n" RESET);
 }
 
 void ProcessorCtor(Processor_t* processor) {

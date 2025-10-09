@@ -1,6 +1,7 @@
 // #include "calculate.h"
 #include "calculator.h"
 
+// #define DEBUG
 // Считывание файла в буфер с переделыванием code.ASM в исполняемый байт-код
 // Байт-код будет храниться в массиве, который нужно создать
 // 
@@ -241,17 +242,22 @@ void Calculate(Processor_t* processor)
     StackElement_t* arr          = processor->code;
     StackElement_t* arr_register = processor->registers;
 
-    int i = 0;
-
+    int j = 0;
     while (processor->code[processor->counter] != 0) {
             int i = 0;
 
             while (arr_command[i].command != processor->code[processor->counter]) {
                 i++;
             }
-            
             // printf("code = %d\n", arr_command[i].command);
             arr_command[i].func(processor);
+
+            #ifdef DEBUG
+            printf("[%d]", j);
+            PRINTSTACK(processor->stack);
+            #endif
+
+            j++;
 
             // int c = getchar();
         }

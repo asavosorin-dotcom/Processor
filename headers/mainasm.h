@@ -5,5 +5,6 @@
 
 #include "asm.h"
 #include "stack.h"
+#include "colors.h"
 
 #endif
