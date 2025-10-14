@@ -76,15 +76,15 @@ void Compile(const char* commandfile, Assembler_t* assembler)
             buffer++;
             // printf("%d\n", sscanf(buffer, "%d", &assembler->label.->label_name));
             // label[label_index] = count_element;
-            sscanf(buffer, "%d", &assembler->label[assembler->label_index].label_name);
+            sscanf(buffer, "%s", &assembler->label[assembler->label_index].label_name);
             assembler->label[assembler->label_index].label_value = count_element; // переделать под массив структур меток, пока под одну
             // придумать как индексировать этот массив
 
-            printf(BLUE "-----------------------------------------------------------------------\nSTART label\n\n" RESET);
+            printf(BLUE "-----------------------------------------------------------------------\nSTART label\n\n");
 
-            printf("label[%d] = %d %d\n",assembler->label_index, assembler->label[assembler->label_index].label_name, assembler->label[assembler->label_index].label_value);
+            printf("label[%d] = %s %d\n",assembler->label_index, assembler->label[assembler->label_index].label_name, assembler->label[assembler->label_index].label_value);
             
-            printf(BLUE "\nEND label\n-----------------------------------------------------------------------\n\n" RESET);
+            printf("\nEND label\n-----------------------------------------------------------------------\n\n" RESET);
 
             assembler->label_index++;
             buffer = strchr(buffer, '\n');
@@ -136,31 +136,31 @@ void Compile(const char* commandfile, Assembler_t* assembler)
 
             // printf("label_name = ");
             // puts(label_name);
-            int label_name = 0;
+            char label_name[40] = "";
 
             if (jmp_arg[0] == ':')
-                sscanf(buffer + 1, "%d", &label_name);
+                sscanf(buffer + 1, "%s", &label_name);
 
             // for (int i = 0; i < 10; i++)
             //     if (assembler->label[i])
 
-            printf("%d\n", label_name); // PRINTF DEBUG
+            printf("%s\n", label_name); // PRINTF DEBUG
 
             int i = 0;
             for (; i < assembler->label_index; i++)
             {
-                if (assembler->label[i].label_name == label_name)
+                if (strcmp(assembler->label[i].label_name, label_name) == 0)
                     break;
             }
 
             // printf(TYPEELEM "\n", elem);
-            printf(MAGENTA"------------------------------------------------------------------\nJUMP\n\n"RESET);
+            printf(MAGENTA"------------------------------------------------------------------\nJUMP\n\n");
             printf("index_in_label = %d\n", i);
             printf("elem = ");
             PRINTELEM(assembler->label[i].label_value);
-            printf("label_name = %d\n", assembler->label[i].label_name);
+            printf("label_name = %s\n", assembler->label[i].label_name);
             PUSH(stack, assembler->label[i].label_value);
-            printf(MAGENTA"\nEND_OF_JUMP\n------------------------------------------------------------------\n"RESET);
+            printf("\nEND_OF_JUMP\n------------------------------------------------------------------\n"RESET);
 
             count_element++;
         }

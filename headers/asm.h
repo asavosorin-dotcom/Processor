@@ -31,7 +31,7 @@ enum COMMANDS{
 };
 
 typedef struct {
-    int label_name;
+    char label_name[10];
     int label_value;
 } Label_t;
 

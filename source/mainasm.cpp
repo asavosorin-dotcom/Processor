@@ -7,13 +7,6 @@ int main() {
     Assembler_t assembler = {};
     AssemblerCtor(&assembler);
 
-    Label_t labels[10] = {0};
-
-    for (int i = 0; i < 10; i++) // иницализация массива labels
-    {
-        labels[i] = {-1, -1};
-    }  
-
     char* commandfile = "commandfiletest.asm";
     Compile(commandfile, &assembler);
     Compile(commandfile, &assembler);
@@ -29,7 +22,7 @@ int main() {
     // }
 
     fclose(fileerr);
-    printf(BOLD_GREEN "SUCCES!\n" RESET);
+    printf(BOLD_GREEN "\nSUCCES!\n" RESET);
 
     return 0;
 }
@@ -38,7 +31,7 @@ void AssemblerCtor(Assembler_t* assembler)
 {
     for (int i = 0; i < 10; i++) // иницализация массива labels
     {
-        assembler->label[i] = {-1, -1};
+        assembler->label[i] = {"", -1};
     }
     
     assembler->label_index = 0;
