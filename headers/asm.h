@@ -6,9 +6,9 @@
 
 #include "work_with_text.h"
 #include "stack.h"
+#include "colors.h"
 
-void Compile          (const char* commandfile, int* label);
-void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, int count_element);
+// #define DEBUG_ASSEMBLER
 
 enum COMMANDS{
     HLT_G   = 0 , 
@@ -31,10 +31,24 @@ enum COMMANDS{
 };
 
 typedef struct {
+    int label_name;
+    int label_value;
+} Label_t;
+
+typedef struct {
     const char* command_name;
     size_t      command_size;
     COMMANDS    command_code;
     // void (*command_func) (Processor_t*);
 } Command_t;
+
+typedef struct {
+    Label_t label[10];
+    int     label_index;
+} Assembler_t;
+
+void Compile(const char* commandfile, Assembler_t* assrembler);
+
+void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, int count_element);
 
 #endif

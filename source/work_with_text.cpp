@@ -12,7 +12,7 @@ Buffer CreateBuffer(const char* filename) {
 
     size_t numOfElem    = SizeOfFile(filename) / sizeof(char);
     char* buffer        = (char* ) calloc(numOfElem + 2, sizeof(char));
-    size_t numOfElemNew = fread(buffer + 1, sizeof(char), numOfElem + 1, file);
+    size_t numOfElemNew = fread(buffer + 1, sizeof(char), numOfElem + 2, file);
 
     // point_struct->buff = buffer;
     // point_struct->buff_size = numOfElemNew;
@@ -92,8 +92,17 @@ size_t CountStr(const char* buffer) {
 }
 
 void OutPutBuf(char* buffer, FILE* fileout, size_t numOfElemNew) {
-    for (size_t i = 0; i < numOfElemNew; i++) 
+    for (size_t i = 0; i < numOfElemNew; i++) {
         fputc(buffer[i]? buffer[i] : '\n', fileout);
+
+        if (buffer[i] == '\n')
+            fputs("\\n \n", fileout);
+
+        if (buffer[i] == '\0')
+            fprintf(fileout, "0\n");
+    }
+        
+
 }
 
 size_t Maxlen(char* buffer) {

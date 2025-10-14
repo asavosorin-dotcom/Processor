@@ -30,11 +30,13 @@ Command_t arr_command[50] = {
                             "JNE"  , 4, JNE_G  
 };
 
-void Compile(const char* commandfile, int* label) {
+void Compile(const char* commandfile, Assembler_t* assembler) 
+{
     
     Buffer struct_buffer = CreateBuffer(commandfile);
-    char* buffer = struct_buffer.buff;
-    OutPutBuf(buffer, fileerr, struct_buffer.buff_size + 2);
+    char*  buffer        = struct_buffer.buff;
+
+    // OutPutBuf(buffer, stdout, struct_buffer.buff_size + 2);
 
     buffer += 1;
 
@@ -63,16 +65,28 @@ void Compile(const char* commandfile, int* label) {
         StackElement_t elem = 0;        
 
         sscanf(buffer, "%s", cmdStr); //Проверка
+
+        //PUSH 80
         // fprintf(fileerr, "cmdStr = %s\n", cmdStr);
         
         if (cmdStr[0] == ':') 
         {
-            puts(cmdStr); // printf
-            int label_index = atoi(cmdStr + 1);
-            label[label_index] = count_element;
+            printf("label = %s\n", cmdStr);
+            printf("buffer[0] = %c, buffer[1] = %c\n", buffer[0], buffer[1]);
+            buffer++;
+            // printf("%d\n", sscanf(buffer, "%d", &assembler->label.->label_name));
+            // label[label_index] = count_element;
+            sscanf(buffer, "%d", &assembler->label[assembler->label_index].label_name);
+            assembler->label[assembler->label_index].label_value = count_element; // переделать под массив структур меток, пока под одну
+            // придумать как индексировать этот массив
 
-            // printf("label[%d] = %d\n", label_index, count_element);
+            printf(BLUE "-----------------------------------------------------------------------\nSTART label\n\n" RESET);
 
+            printf("label[%d] = %d %d\n",assembler->label_index, assembler->label[assembler->label_index].label_name, assembler->label[assembler->label_index].label_value);
+            
+            printf(BLUE "\nEND label\n-----------------------------------------------------------------------\n\n" RESET);
+
+            assembler->label_index++;
             buffer = strchr(buffer, '\n');
         }
 
@@ -84,6 +98,8 @@ void Compile(const char* commandfile, int* label) {
         printf("cmdStr = ");
         puts(cmdStr);
         #endif
+
+        //
 
         while (strcmp(cmdStr, arr_command[i].command_name) != 0) {
             // fprintf(fileerr, "i = %d\n", i);
@@ -115,20 +131,36 @@ void Compile(const char* commandfile, int* label) {
                 buffer++;
             }
 
-            char label_name[40] = ""; 
-            sscanf(buffer, "%s", label_name);
+            char jmp_arg[40] = ""; 
+            sscanf(buffer, "%s", jmp_arg);
 
             // printf("label_name = ");
             // puts(label_name);
+            int label_name = 0;
 
-            int label_index = 0;
-            label_index = atoi(label_name + 1);
+            if (jmp_arg[0] == ':')
+                sscanf(buffer + 1, "%d", &label_name);
 
-            printf("%d\n", label_index); // PRINTF DEBUG
-            printf(TYPEELEM "\n", elem);
+            // for (int i = 0; i < 10; i++)
+            //     if (assembler->label[i])
+
+            printf("%d\n", label_name); // PRINTF DEBUG
+
+            int i = 0;
+            for (; i < assembler->label_index; i++)
+            {
+                if (assembler->label[i].label_name == label_name)
+                    break;
+            }
+
+            // printf(TYPEELEM "\n", elem);
+            printf(MAGENTA"------------------------------------------------------------------\nJUMP\n\n"RESET);
+            printf("index_in_label = %d\n", i);
             printf("elem = ");
-            PRINTELEM(label[label_index]);
-            PUSH(stack, label[label_index]);
+            PRINTELEM(assembler->label[i].label_value);
+            printf("label_name = %d\n", assembler->label[i].label_name);
+            PUSH(stack, assembler->label[i].label_value);
+            printf(MAGENTA"\nEND_OF_JUMP\n------------------------------------------------------------------\n"RESET);
 
             count_element++;
         }
@@ -151,8 +183,10 @@ void Compile(const char* commandfile, int* label) {
             //     break;
         } 
 
-        buffer = strchr(buffer, '\n');
-
+        
+        // printf("*buffer = %c\n", buffer[-2]);
+        buffer = strchr(buffer- 1, '\n');
+        
         if (buffer == NULL)
             break;
     }
@@ -165,6 +199,8 @@ void Compile(const char* commandfile, int* label) {
     // открывать файл с байт-кодом и печатать его туда
     FILE* bitecode = fopen("bitecode.asm", "wb");
     fprintf(fileerr, "count_elem = %d\n", count_element);
+
+    assembler->label_index = 0;
 
     WriteBiteCodeFile(bitecode, stack.data, count_element);
     fclose(bitecode);

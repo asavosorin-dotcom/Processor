@@ -3,13 +3,20 @@
 FILE* fileerr = fopen("Logfile.log", "w");
 
 int main() {
-    int label[10] = {};
-
-    for (int i = 0; i < 10; i++)
-        label[i] = -1;
     
-    Compile("commandfile.asm", label);
-    Compile("commandfile.asm", label);
+    Assembler_t assembler = {};
+    AssemblerCtor(&assembler);
+
+    Label_t labels[10] = {0};
+
+    for (int i = 0; i < 10; i++) // иницализация массива labels
+    {
+        labels[i] = {-1, -1};
+    }  
+
+    char* commandfile = "commandfiletest.asm";
+    Compile(commandfile, &assembler);
+    Compile(commandfile, &assembler);
 
     // for (int i = 0; arr[i] != 0; i++) {
     //     printf("%d ", arr[i]);
@@ -23,4 +30,16 @@ int main() {
 
     fclose(fileerr);
     printf(BOLD_GREEN "SUCCES!\n" RESET);
+
+    return 0;
+}
+
+void AssemblerCtor(Assembler_t* assembler) 
+{
+    for (int i = 0; i < 10; i++) // иницализация массива labels
+    {
+        assembler->label[i] = {-1, -1};
+    }
+    
+    assembler->label_index = 0;
 }

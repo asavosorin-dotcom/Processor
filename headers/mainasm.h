@@ -7,4 +7,6 @@
 #include "stack.h"
 #include "colors.h"
 
+void AssemblerCtor(Assembler_t* assembler);
+
 #endif

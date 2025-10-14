@@ -13,10 +13,9 @@ int main() {
     CALCULATE(processor);
 
     processor.code = point_code;
-
+    
     ProcessorDtor(&processor);
     fclose(fileerr);
-
     printf(BOLD_GREEN "SUCCES!\n" RESET);
 }
 
