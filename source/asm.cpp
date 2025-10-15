@@ -27,7 +27,8 @@ Command_t arr_command[50] = {
                             "JA"   , 3, JA_G   ,
                             "JAE"  , 4, JAE_G  ,
                             "JE"   , 3, JE_G   ,
-                            "JNE"  , 4, JNE_G  
+                            "JNE"  , 4, JNE_G  ,
+                            "J"    , 2, J_G    
 };
 
 void Compile(const char* commandfile, Assembler_t* assembler) 
@@ -65,7 +66,7 @@ void Compile(const char* commandfile, Assembler_t* assembler)
         StackElement_t elem = 0;        
 
         sscanf(buffer, "%s", cmdStr); //Проверка
-
+        
         //PUSH 80
         // fprintf(fileerr, "cmdStr = %s\n", cmdStr);
         
@@ -99,8 +100,6 @@ void Compile(const char* commandfile, Assembler_t* assembler)
         puts(cmdStr);
         #endif
 
-        //
-
         while (strcmp(cmdStr, arr_command[i].command_name) != 0) {
             // fprintf(fileerr, "i = %d\n", i);
             i++;
@@ -126,7 +125,7 @@ void Compile(const char* commandfile, Assembler_t* assembler)
             count_element++;
         }
         
-        if (i >= JB_G && i <= JNE_G) {
+        if (i >= JB_G && i <= J_G) {
             while (isspace(*buffer)) {
                 buffer++;
             }
@@ -185,7 +184,7 @@ void Compile(const char* commandfile, Assembler_t* assembler)
 
         
         // printf("*buffer = %c\n", buffer[-2]);
-        buffer = strchr(buffer- 1, '\n');
+        buffer = strchr(buffer, '\n');
         
         if (buffer == NULL)
             break;

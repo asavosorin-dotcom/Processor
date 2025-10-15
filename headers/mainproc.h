@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "calculator.h"
+#include "processor.h"
 #include "bite.h"
 #include "Logfile.h"
 

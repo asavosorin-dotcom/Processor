@@ -1,9 +1,6 @@
-// #include "calculate.h"
-#include "calculator.h"
+#include "processor.h"
 
 // #define DEBUG
-// Считывание файла в буфер с переделыванием code.ASM в исполняемый байт-код
-// Байт-код будет храниться в массиве, который нужно создать
 // 
 
 Processor_command_t arr_command[50] = { 
@@ -24,9 +21,10 @@ Processor_command_t arr_command[50] = {
                             JAE_G  ,  ProcessorJump_AE,
                             JE_G   ,  ProcessorJump_E ,
                             JNE_G  ,  ProcessorJump_NE,
+                            J_G    ,  ProcessorJump
 };
 
-int ProcessorPush(Processor_t* processor) 
+int ProcessorPush  (Processor_t* processor) 
 {
     int err = 0;
     
@@ -44,7 +42,7 @@ int ProcessorPush(Processor_t* processor)
     return err;
 }
 
-int ProcessorOut(Processor_t* processor) 
+int ProcessorOut   (Processor_t* processor) 
 {
     assert(processor);
     
@@ -61,7 +59,7 @@ int ProcessorOut(Processor_t* processor)
     return err;
 }
  
-int ProcessorAdd(Processor_t* processor) 
+int ProcessorAdd   (Processor_t* processor) 
 {    
     assert(processor);   
     
@@ -78,7 +76,7 @@ int ProcessorAdd(Processor_t* processor)
     return err;
 }
 
-int ProcessorSub(Processor_t* processor) 
+int ProcessorSub   (Processor_t* processor) 
 {
     assert(processor);
     
@@ -96,7 +94,7 @@ int ProcessorSub(Processor_t* processor)
     return err;
 }
 
-int ProcessorMul(Processor_t* processor) 
+int ProcessorMul   (Processor_t* processor) 
 {
     assert(processor);
 
@@ -116,7 +114,7 @@ int ProcessorMul(Processor_t* processor)
     return err;
 }
 
-int ProcessorDiv(Processor_t* processor) 
+int ProcessorDiv   (Processor_t* processor) 
 {
     assert(processor);
     // printf()
@@ -135,7 +133,7 @@ int ProcessorDiv(Processor_t* processor)
     return err;
 }
 
-int ProcessorSqr(Processor_t* processor) 
+int ProcessorSqr   (Processor_t* processor) 
 {    
     assert(processor);
     
@@ -152,7 +150,7 @@ int ProcessorSqr(Processor_t* processor)
     return err;
 }
 
-int ProcessorIn(Processor_t* processor) 
+int ProcessorIn    (Processor_t* processor) 
 {
     assert(processor);
     
@@ -169,7 +167,7 @@ int ProcessorIn(Processor_t* processor)
     return err;
 }
 
-int ProcessorPopr(Processor_t* processor) 
+int ProcessorPopr  (Processor_t* processor) 
 {
     assert(processor);
     
@@ -190,7 +188,7 @@ int ProcessorPopr(Processor_t* processor)
     return err;
 }
 
-int ProcessorPushr(Processor_t* processor) 
+int ProcessorPushr (Processor_t* processor) 
 {
     assert(processor);
 
@@ -207,6 +205,11 @@ int ProcessorPushr(Processor_t* processor)
 
     return err;
 }
+
+// int ProcessorCall  (Processor_t* processor) 
+// {    
+    
+// }
 
 //--------------------------------------------------------------JUMP-----------------------------------------------------------------
 #define IMPL_JUMP(name, op_comparison) int ProcessorJump_##name(Processor_t* processor) \
@@ -234,9 +237,24 @@ IMPL_JUMP(A , > )
 IMPL_JUMP(AE, >=)
 IMPL_JUMP(E , ==)
 IMPL_JUMP(NE, !=)
+
+int ProcessorJump (Processor_t* processor) 
+{
+    assert(processor);                                                                  
+    int err = 0;                                                                        
+                                                                                        
+    processor->counter = processor->code[processor->counter + 1];                   
+    
+    return err;
+}
 //------------------------------------------------------------------------------------------------------------------------------------
 
-void Calculate(Processor_t* processor) 
+// int ProcessorCall (Processor_t* processor) 
+// {
+// 
+// }                                                                                                                                                                                                                                                                                           
+
+void Calculate (Processor_t* processor) 
 {
     
     StackElement_t* arr          = processor->code;

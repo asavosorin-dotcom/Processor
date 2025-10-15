@@ -11,7 +11,7 @@ Buffer CreateBuffer(const char* filename) {
     assert(file);
 
     size_t numOfElem    = SizeOfFile(filename) / sizeof(char);
-    char* buffer        = (char* ) calloc(numOfElem + 2, sizeof(char));
+    char* buffer        = (char* ) calloc(numOfElem + 20, sizeof(char));
     size_t numOfElemNew = fread(buffer + 1, sizeof(char), numOfElem + 2, file);
 
     // point_struct->buff = buffer;
