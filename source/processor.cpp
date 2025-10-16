@@ -4,7 +4,7 @@
 // 
 
 Processor_command_t arr_command[50] = { 
-                            HLT_G  ,  0,
+                            HLT_G  ,  0               , 
                             PUSH_G ,  ProcessorPush   ,
                             MUL_G  ,  ProcessorMul    ,
                             SUB_G  ,  ProcessorSub    ,
@@ -25,7 +25,8 @@ Processor_command_t arr_command[50] = {
                             CALL_G ,  ProcessorCall   ,
                             RET_G  ,  ProcessorRet    ,
                             PUSHM_G,  ProcessorPushm  ,
-                            POPM_G ,  ProcessorPopm 
+                            POPM_G ,  ProcessorPopm   ,
+                            DRAW_G ,  ProcessorDraw
 };
 
 void PrintArr(int* arr, int number_of_elem) // Спросить у Сани как сделать универсальный
@@ -312,7 +313,25 @@ int ProcessorJump (Processor_t* processor)
     return err;
 }
 //------------------------------------------------------------------------------------------------------------------------------------
-                                                                                                                                                                                                                                                                                           
+                                 
+int ProcessorDraw (Processor_t* processor)
+{
+    int err = 0;
+    
+    for (int i = 0; i < processor->RAM_size; i++)
+    {
+        if (processor->RAM[i] == '*') printf(BOLD_CYAN "%c "RESET, processor->RAM[i]);
+        else                          printf("%c "               , processor->RAM[i]);
+
+        // printf("%d\n", i);
+
+        if (i % 10 == 0) printf("\n");
+    }
+
+    processor->counter++;
+    return err;
+}
+
 void Processor (Processor_t* processor) 
 {
     

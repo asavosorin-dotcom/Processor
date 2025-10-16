@@ -32,10 +32,11 @@ Command_t arr_command[50] = {
                             "CALL" , 5, CALL_G ,
                             "RET"  , 4, RET_G  ,
                             "PUSHM", 6, PUSHM_G,
-                            "POPM" , 5, POPM_G
+                            "POPM" , 5, POPM_G ,
+                            "DRAW" , 5, DRAW_G
 };
 
-int num_command = 22;
+int num_command = 25;
 
 void Compile(const char* commandfile, Assembler_t* assembler) 
 {
@@ -50,7 +51,7 @@ void Compile(const char* commandfile, Assembler_t* assembler)
     // printf("size = %d\n", struct_buffer.buff_size);
 
 //-------------------------------------------------------------------------------------------------------------------------------------
-    char* cmdStr = (char* ) calloc(10, sizeof(char));
+    char* cmdStr = (char* ) calloc(30, sizeof(char));
 //-------------------------------------------------------------------------------------------------------------------------------------
 
     // OutPutBuf(buffer, stdout, struct_buffer.buff_size + 1);
@@ -74,7 +75,7 @@ void Compile(const char* commandfile, Assembler_t* assembler)
         sscanf(buffer, "%s", cmdStr); //Проверка
         
         //PUSH 80
-        // fprintf(fileerr, "cmdStr = %s\n", cmdStr);
+        fprintf(stdout, "cmdStr = %s\n", cmdStr);
         
         if (cmdStr[0] == ':') 
         {

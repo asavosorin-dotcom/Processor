@@ -2,17 +2,17 @@
 
 FILE* fileerr = fopen("Logfile.log", "w");
 
-int main() {
+int main(int argc, char* argv[]) {
     
     Assembler_t assembler = {};
     AssemblerCtor(&assembler);
 
-    char* commandfile = "square_equation.asm";
+    char* commandfile = argv[1];
     Compile(commandfile, &assembler);
     Compile(commandfile, &assembler);
 
     // for (int i = 0; arr[i] != 0; i++) {
-    //     printf("%d ", arr[i]);
+    //     printf("%d ", arr[i]);.
     // }
 
     // for (int i = 0; i < 7; i++) {
