@@ -7,7 +7,7 @@ int main() {
     Assembler_t assembler = {};
     AssemblerCtor(&assembler);
 
-    char* commandfile = "commandfiletest.asm";
+    char* commandfile = "square_equation.asm";
     Compile(commandfile, &assembler);
     Compile(commandfile, &assembler);
 

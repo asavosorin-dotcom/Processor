@@ -28,7 +28,11 @@ enum COMMANDS{
     JAE_G   = 14,
     JE_G    = 15,
     JNE_G   = 16,
-    J_G     = 17 
+    J_G     = 17,
+    CALL_G  = 18,
+    RET_G   = 19,
+    PUSHM_G = 20,
+    POPM_G  = 21
 };
 
 typedef struct {

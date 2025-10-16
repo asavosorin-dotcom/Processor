@@ -101,7 +101,7 @@ size_t StackHash(Stack_t* stk);
 #define REALLOC(stk)    StackRealloc(&stk, __LINE__);
 #define DTOR(stk)       StackDtor(&stk, __LINE__);
 #define PRINTSTACK(stk) StackPrint(&stk, __LINE__);
-#define PRINTELEM(elem) printf(TYPEELEM"\n", elem);
+#define PRINTELEM(elem) printf(BOLD_BLUE TYPEELEM"\n" RESET, elem);
 
 const StackElement_t POISON    = 0xDEDDEAD;
 const StackElement_t KANAREYKA = 0xDEADCA;

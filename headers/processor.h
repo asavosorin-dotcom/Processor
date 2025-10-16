@@ -10,6 +10,8 @@
 #include "stack.h"
 #include "colors.h"
 
+// #define DEBUG
+
 enum COMMANDS{
     HLT_G   = 0 , 
     PUSH_G  = 1 , 
@@ -28,7 +30,11 @@ enum COMMANDS{
     JAE_G   = 14,
     JE_G    = 15,
     JNE_G   = 16,
-    J_G     = 17 
+    J_G     = 17,
+    CALL_G  = 18,
+    RET_G   = 19,
+    PUSHM_G = 20,
+    POPM_G  = 21
 };
 
 typedef struct {
@@ -36,12 +42,16 @@ typedef struct {
     StackElement_t* code;
     StackElement_t  registers[8];
     size_t          counter;
+    Stack_t         ReturnStack;
+    int*            RAM;
 } Processor_t;
 
 typedef struct {
     COMMANDS command;
     int (*func) (Processor_t*);
 } Processor_command_t;
+
+void PrintArr        (int* arr, int number_of_elem);
 
 int ProcessorPush    (Processor_t* processor);
 int ProcessorOut     (Processor_t* processor);
@@ -60,8 +70,12 @@ int ProcessorJump_A  (Processor_t* processor);
 int ProcessorJump_AE (Processor_t* processor);
 int ProcessorJump_E  (Processor_t* processor);
 int ProcessorJump_NE (Processor_t* processor);
+int ProcessorCall    (Processor_t* processor);
+int ProcessorRet     (Processor_t* processor);
+int ProcessorPushm   (Processor_t* processor);
+int ProcessorPopm    (Processor_t* processor);
 
-void Calculate(Processor_t* processor);
+void Processor(Processor_t* processor);
 
 extern Processor_command_t arr_command[50];
 
@@ -71,6 +85,12 @@ extern Processor_command_t arr_command[50];
 #define DIV(stk)  div(&stk)
 #define SQRT(stk) sqr(&stk)
 
-#define CALCULATE(processor) Calculate(&processor) 
+#define CALCULATE(processor) Processor(&processor) 
+
+#ifdef DEBUG
+    #define ONDEBUGPROC(func) _FUNCTEXCEPT_H
+#else
+    #define ONDEBUGPROC(func)
+#endif
 
 #endif

@@ -28,10 +28,16 @@ void ProcessorCtor(Processor_t* processor) {
         processor->registers[0] = 0;
 
     processor->counter = 0;
+
+    INITSTACK(processor->ReturnStack, 10);
+
+    processor->RAM = (int* ) calloc(100, sizeof(int));
 }
 
 void ProcessorDtor(Processor_t* processor) 
 {
     free(processor->code);
+    free(processor->RAM);
     DTOR(processor->stack);
+    DTOR(processor->ReturnStack);
 }

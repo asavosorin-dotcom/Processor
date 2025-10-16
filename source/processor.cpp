@@ -21,8 +21,25 @@ Processor_command_t arr_command[50] = {
                             JAE_G  ,  ProcessorJump_AE,
                             JE_G   ,  ProcessorJump_E ,
                             JNE_G  ,  ProcessorJump_NE,
-                            J_G    ,  ProcessorJump
+                            J_G    ,  ProcessorJump   ,
+                            CALL_G ,  ProcessorCall   ,
+                            RET_G  ,  ProcessorRet    ,
+                            PUSHM_G,  ProcessorPushm  ,
+                            POPM_G ,  ProcessorPopm 
 };
+
+void PrintArr(int* arr, int number_of_elem) // Спросить у Сани как сделать универсальный
+{
+    // printf(MAGENTA"-----------------------------------------------------------\n\nRAM");
+    printf(MAGENTA);
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n"RESET);
+    // printf("\n\n-----------------------------------------------------------\n"RESET);
+}
 
 int ProcessorPush  (Processor_t* processor) 
 {
@@ -178,7 +195,7 @@ int ProcessorPopr  (Processor_t* processor)
     // PRINTELEM(val);
     processor->counter++;
 
-    // printf("code in popr = %d\n", processor->code[processor->counter]);
+    ONDEBUGPROC(printf("code in popr = %d\n", processor->code[processor->counter]));
 
     processor->registers[processor->code[processor->counter] - 1] = val;
     processor->counter++;
@@ -206,10 +223,57 @@ int ProcessorPushr (Processor_t* processor)
     return err;
 }
 
-// int ProcessorCall  (Processor_t* processor) 
-// {    
+int ProcessorCall  (Processor_t* processor) 
+{    
+    int err = 0;
     
-// }
+    PUSH(processor->ReturnStack, processor->counter + 2);
+    ONDEBUGPROC(printf(MAGENTA"\nadress_call = %d\n"RESET, processor->counter + 2));
+    ProcessorJump (processor);
+
+    return err;
+}
+
+int ProcessorRet   (Processor_t* processor)
+{
+    int err = 0; 
+    
+    StackElement_t adress = 0;
+    err = POP(processor->ReturnStack, adress);
+    processor->counter = adress;
+
+    ONDEBUGPROC(printf(BLUE "return adress = %d\n" RESET, adress));
+
+    return err;
+}
+
+int ProcessorPushm (Processor_t* processor)
+{
+    int err = 0;
+
+    int val = 0;
+    ProcessorPushr(processor);
+    POP(processor->stack, val);
+
+    err = PUSH(processor->stack, processor->RAM[val]);
+
+    return err;
+}
+
+int ProcessorPopm  (Processor_t* processor) 
+{
+    int err = 0;
+
+    int val = 0;
+    ProcessorPushr(processor);
+    POP(processor->stack, val);
+
+    ONDEBUGPROC(printf(YELLOW"\nPOPM\nval = %d\n\n"RESET, val));
+
+    POP(processor->stack, processor->RAM[val]);
+
+    return err;
+}
 
 //--------------------------------------------------------------JUMP-----------------------------------------------------------------
 #define IMPL_JUMP(name, op_comparison) int ProcessorJump_##name(Processor_t* processor) \
@@ -248,13 +312,8 @@ int ProcessorJump (Processor_t* processor)
     return err;
 }
 //------------------------------------------------------------------------------------------------------------------------------------
-
-// int ProcessorCall (Processor_t* processor) 
-// {
-// 
-// }                                                                                                                                                                                                                                                                                           
-
-void Calculate (Processor_t* processor) 
+                                                                                                                                                                                                                                                                                           
+void Processor (Processor_t* processor) 
 {
     
     StackElement_t* arr          = processor->code;
@@ -267,16 +326,22 @@ void Calculate (Processor_t* processor)
             while (arr_command[i].command != processor->code[processor->counter]) {
                 i++;
             }
-            // printf("code = %d\n", arr_command[i].command);
+
+            #ifdef DEBUG
+            printf("code = %d\n", arr_command[i].command);
+            printf(YELLOW "adress = %d\n" RESET, processor->counter);
+            #endif
+
             arr_command[i].func(processor);
 
             #ifdef DEBUG
             printf("[%d]", j);
             PRINTSTACK(processor->stack);
+            PrintArr(processor->RAM, 100);
+            int c = getchar();
             #endif
 
             j++;
 
-            // int c = getchar();
         }
 }
