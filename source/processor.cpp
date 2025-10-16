@@ -26,7 +26,8 @@ Processor_command_t arr_command[50] = {
                             RET_G  ,  ProcessorRet    ,
                             PUSHM_G,  ProcessorPushm  ,
                             POPM_G ,  ProcessorPopm   ,
-                            DRAW_G ,  ProcessorDraw
+                            DRAW_G ,  ProcessorDraw   ,
+                            REM_G  ,  ProcessorRemdiv
 };
 
 void PrintArr(int* arr, int number_of_elem) // Спросить у Сани как сделать универсальный
@@ -145,6 +146,25 @@ int ProcessorDiv   (Processor_t* processor)
     err |= POP(processor->stack, elem2);
 
     err |= PUSH(processor->stack, elem2 / elem1);
+
+    processor->counter++;
+
+    return err;
+}
+
+int ProcessorRemdiv(Processor_t* processor)
+{
+    assert(processor);
+    // printf()
+    // PRINTSTACK(processor->stack);
+    StackElement_t elem1 = 0;
+    StackElement_t elem2 = 0;
+
+    int err = POP(processor->stack, elem1);
+
+    err |= POP(processor->stack, elem2);
+
+    err |= PUSH(processor->stack, elem2 % elem1);
 
     processor->counter++;
 
@@ -320,12 +340,12 @@ int ProcessorDraw (Processor_t* processor)
     
     for (int i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') printf(BOLD_CYAN "%c "RESET, processor->RAM[i]);
-        else                          printf("%c "               , processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(fileerr, "%c", processor->RAM[i]);
+        else                          fprintf(fileerr, "%c", processor->RAM[i]);
 
         // printf("%d\n", i);
 
-        if (i % 10 == 0) printf("\n");
+        if ((i + 1) % 20 == 0) fprintf(fileerr, "\n");
     }
 
     processor->counter++;

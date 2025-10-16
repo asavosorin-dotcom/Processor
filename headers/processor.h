@@ -52,6 +52,7 @@ int ProcessorRet     (Processor_t* processor);
 int ProcessorPushm   (Processor_t* processor);
 int ProcessorPopm    (Processor_t* processor);
 int ProcessorDraw    (Processor_t* processor);
+int ProcessorRemdiv  (Processor_t* processor);
 
 void Processor(Processor_t* processor);
 

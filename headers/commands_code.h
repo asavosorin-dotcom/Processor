@@ -24,7 +24,8 @@ enum COMMANDS{
     RET_G   = 19,
     PUSHM_G = 20,
     POPM_G  = 21,
-    DRAW_G  = 22
+    DRAW_G  = 22,
+    REM_G   = 23,
 };
 
 #endif

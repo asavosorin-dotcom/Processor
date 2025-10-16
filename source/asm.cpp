@@ -33,10 +33,11 @@ Command_t arr_command[50] = {
                             "RET"  , 4, RET_G  ,
                             "PUSHM", 6, PUSHM_G,
                             "POPM" , 5, POPM_G ,
-                            "DRAW" , 5, DRAW_G
+                            "DRAW" , 5, DRAW_G ,
+                            "REM"  , 4, REM_G
 };
 
-int num_command = 25;
+int num_command = 26;
 
 void Compile(const char* commandfile, Assembler_t* assembler) 
 {
@@ -170,9 +171,12 @@ void Compile(const char* commandfile, Assembler_t* assembler)
 
             int i = 0;
 
-            printf(RED"label_index = %d\n"RESET, assembler->label_index);
+            printf(RED "label_index = %d\n" RESET, assembler->label_index);
 
-            for (; i < assembler->label_index; i++)
+            if (assembler->label_count <= assembler->label_index)
+                assembler->label_count = assembler->label_index;
+
+            for (; i < assembler->label_count; i++)
             {
                 if (strcmp(assembler->label[i].label_name, label_name) == 0)
                     break;
@@ -214,6 +218,7 @@ void Compile(const char* commandfile, Assembler_t* assembler)
 
             char name[10] = ""; 
             sscanf(buffer, "%s", name);
+            printf(BOLD_RED "name in popm = %.20s\n" RESET, buffer);
 
             if (name[0] !=  '[')
             {
@@ -245,7 +250,8 @@ void Compile(const char* commandfile, Assembler_t* assembler)
     FILE* bitecode = fopen("bitecode.asm", "wb");
     fprintf(fileerr, "count_elem = %d\n", count_element);
 
-    // assembler->label_index = 0;
+    assembler->label_count = assembler->label_index;
+    assembler->label_index = 0;
 
     WriteBiteCodeFile(bitecode, stack.data, count_element);
     fclose(bitecode);

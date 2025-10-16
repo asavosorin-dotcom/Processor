@@ -35,4 +35,5 @@ void AssemblerCtor(Assembler_t* assembler)
     }
     
     assembler->label_index = 0;
+    assembler->label_count = 0;
 }

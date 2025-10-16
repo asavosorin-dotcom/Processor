@@ -30,7 +30,7 @@ void ProcessorCtor(Processor_t* processor) {
     processor->counter = 0;
 
     INITSTACK(processor->ReturnStack, 10);
-    processor->RAM_size = 100;
+    processor->RAM_size = 400;
     processor->RAM = (int* ) calloc(processor->RAM_size, sizeof(int));
 }
 

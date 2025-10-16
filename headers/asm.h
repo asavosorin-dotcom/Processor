@@ -12,7 +12,7 @@
 // #define DEBUG_ASSEMBLER
 
 typedef struct {
-    char label_name[10];
+    char label_name[30];
     int label_value;
 } Label_t;
 
@@ -26,6 +26,7 @@ typedef struct {
 typedef struct {
     Label_t label[10];
     int     label_index;
+    int     label_count;
 } Assembler_t;
 
 void Compile(const char* commandfile, Assembler_t* assrembler);
