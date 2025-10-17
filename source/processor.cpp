@@ -78,98 +78,31 @@ int ProcessorOut   (Processor_t* processor)
     return err;
 }
  
-int ProcessorAdd   (Processor_t* processor) 
-{    
-    assert(processor);   
-    
-    StackElement_t elem1 = 0;
-    StackElement_t elem2 = 0;
-    
-    int err = POP(processor->stack, elem1);
-    err |= POP(processor->stack, elem2);
-
-    err |= PUSH(processor->stack, elem1 + elem2);
-
-    processor->counter++;
-
-    return err;
+//--------------------------------------------BASE---OPERATION----------------------------------------------------------------------
+#define IMPL_BASE_OP(name, op) int Processor##name   (Processor_t* processor) \
+{                                                                         \
+    assert(processor);                                                    \
+                                                                          \
+    StackElement_t elem1 = 0;                                             \
+    StackElement_t elem2 = 0;                                             \
+                                                                          \
+    int err = POP(processor->stack, elem1);                               \
+    err |= POP(processor->stack, elem2);                                  \
+                                                                          \
+    err |= PUSH(processor->stack, elem2 op elem1);                        \
+                                                                          \
+    processor->counter++;                                                 \
+                                                                          \
+    return err;                                                           \
 }
+//----------------------------------------------------------------------------------------------------------------------------------
 
-int ProcessorSub   (Processor_t* processor) 
-{
-    assert(processor);
-    
-    StackElement_t elem1 = 0;
-    StackElement_t elem2 = 0;
-    
-    int err = POP(processor->stack, elem1);
+IMPL_BASE_OP(Add,    +)
+IMPL_BASE_OP(Sub,    -)
+IMPL_BASE_OP(Mul,    *)
+IMPL_BASE_OP(Div,    /)
+IMPL_BASE_OP(Remdiv, %)
 
-    err |= POP(processor->stack, elem2);
-
-    err |= PUSH(processor->stack, elem2 - elem1);
-
-    processor->counter++;
-
-    return err;
-}
-
-int ProcessorMul   (Processor_t* processor) 
-{
-    assert(processor);
-
-    StackElement_t elem1 = 0;
-    StackElement_t elem2 = 0;
-    
-    int err = POP(processor->stack, elem1);
-
-    err |= POP(processor->stack, elem2);
-
-    err |= PUSH(processor->stack, elem2 * elem1);
-
-    processor->counter++;
-
-    // printf("im in mul\n");
-
-    return err;
-}
-
-int ProcessorDiv   (Processor_t* processor) 
-{
-    assert(processor);
-    // printf()
-    // PRINTSTACK(processor->stack);
-    StackElement_t elem1 = 0;
-    StackElement_t elem2 = 0;
-
-    int err = POP(processor->stack, elem1);
-
-    err |= POP(processor->stack, elem2);
-
-    err |= PUSH(processor->stack, elem2 / elem1);
-
-    processor->counter++;
-
-    return err;
-}
-
-int ProcessorRemdiv(Processor_t* processor)
-{
-    assert(processor);
-    // printf()
-    // PRINTSTACK(processor->stack);
-    StackElement_t elem1 = 0;
-    StackElement_t elem2 = 0;
-
-    int err = POP(processor->stack, elem1);
-
-    err |= POP(processor->stack, elem2);
-
-    err |= PUSH(processor->stack, elem2 % elem1);
-
-    processor->counter++;
-
-    return err;
-}
 
 int ProcessorSqr   (Processor_t* processor) 
 {    
@@ -340,12 +273,12 @@ int ProcessorDraw (Processor_t* processor)
     
     for (int i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') fprintf(fileerr, "%c", processor->RAM[i]);
-        else                          fprintf(fileerr, "%c", processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(fileerr, "%c ", processor->RAM[i]);
+        else                          fprintf(fileerr, "%c ", processor->RAM[i]);
 
         // printf("%d\n", i);
 
-        if ((i + 1) % 20 == 0) fprintf(fileerr, "\n");
+        if ((i + 1) % 71 == 0) fprintf(fileerr, "\n");
     }
 
     processor->counter++;

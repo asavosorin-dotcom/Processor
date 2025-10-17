@@ -1,9 +1,9 @@
 IN ; radius
 
-PUSH 10 ; x0, y0
+PUSH 35 ; x0, y0
 POPR RGX
 
-PUSH 20
+PUSH 71
 POPR RHX
 
 POPR RAX
@@ -16,7 +16,7 @@ POPR RDX ; cчетчик
 :cir
 
 PUSHR RDX
-PUSH 400
+PUSH 5041
 
 JAE :end
 
