@@ -4,5 +4,6 @@
 #include <stdio.h>
 
 extern FILE* fileerr;
+extern FILE* fileout;
 
 #endif

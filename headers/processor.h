@@ -63,11 +63,9 @@ extern Processor_command_t arr_command[50];
 #define MUL(stk)  mul(&stk)
 #define DIV(stk)  div(&stk)
 #define SQRT(stk) sqr(&stk)
-
-#define CALCULATE(processor) Processor(&processor) 
-
+ 
 #ifdef DEBUG
-    #define ONDEBUGPROC(func) _FUNCTEXCEPT_H
+    #define ONDEBUGPROC(func) func
 #else
     #define ONDEBUGPROC(func)
 #endif

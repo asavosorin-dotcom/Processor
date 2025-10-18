@@ -9,7 +9,7 @@
 #include "colors.h"
 #include "commands_code.h"
 
-// #define DEBUG_ASSEMBLER
+#define DEBUG_ASSEMBLER
 
 typedef struct {
     char label_name[30];
@@ -29,8 +29,36 @@ typedef struct {
     int     label_count;
 } Assembler_t;
 
+typedef struct {
+    char*   buffer;
+    int     count_element;
+    Stack_t stack;
+    char* cmdStr;
+} Compile_t;
+
+char* skip_space(char* buffer);
+
 void Compile(const char* commandfile, Assembler_t* assrembler);
 
-void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, int count_element);
+void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, size_t count_element);
+
+void CompileCtor(const char* commandfile, Compile_t* compile_struct);
+void CompileDtor(Compile_t* compile_struct);
+
+void Assembler_Push        (Compile_t* compile_struct);
+int Assembler_Write_label (Assembler_t* assembler,  Compile_t* compile_struct);
+int Assembler_Jump         (Assembler_t* assembler, Compile_t* compile_struct);
+void Assembler_Register_Arg (Compile_t* compile_struct);
+int  Assembler_RAM (Compile_t* compile_struct);
+
+int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct, int* i);
+
+#ifdef DEBUG_ASSEMBLER
+    #define ONDEBUGASM(func) func
+#else
+    #define ONDEBUGASM(func)
+#endif
+
+#define PRINT_DEBUG(...) ONDEBUGASM(printf(__VA_ARGS__);)
 
 #endif

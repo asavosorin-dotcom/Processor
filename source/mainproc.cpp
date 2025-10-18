@@ -1,6 +1,7 @@
 #include "mainproc.h"
 
 FILE* fileerr = fopen("Logfile1.log", "w");
+FILE* fileout = fopen("Fileout.txt", "w");
 
 int main() {
     // fprintf(fileerr, "DKSAVNOADKSNV;LKASDNV");
@@ -10,7 +11,7 @@ int main() {
     
     StackElement_t* point_code = processor.code;
 
-    CALCULATE(processor);
+    Processor(&processor);
 
     processor.code = point_code;
     
@@ -19,7 +20,8 @@ int main() {
     printf(BOLD_GREEN "SUCCES!\n" RESET);
 }
 
-void ProcessorCtor(Processor_t* processor) {
+void ProcessorCtor(Processor_t* processor) 
+{
     INITSTACK(processor->stack, 10);
 
     processor->code = TextConvertToBite("bitecode.asm");

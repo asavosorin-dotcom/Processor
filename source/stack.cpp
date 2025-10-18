@@ -46,6 +46,8 @@ int StackCtor(Stack_t* stk, int capasity, int line, const char* stackname, const
         stk->data = (StackElement_t* ) calloc((size_t) capasity, sizeof(StackElement_t));
     #endif
 
+    printf(GREEN "after calloc [%p]\n" RESET, stk->data);
+
     #ifdef DEBUG
     if (stk->data == NULL) {
         fprintf(fileerr, "Called from func: %s line: %d ERROR: pointer data is NULL\n", __func__, line);
@@ -94,10 +96,16 @@ int StackPush(Stack_t* stk, StackElement_t elem, int line) {
 
     // fprintf(fileerr, "size in push = %d\n", (int) stk->size);
 
+    printf(MAGENTA "%s:%d: stack@%p: in push [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
+
     if ((int) stk->size == stk->capasity) {
         // fprintf(fileerr, "Check realloc\n");
+        // printf("Check realloc\n");
         REALLOC(*stk)
     }
+
+    printf(MAGENTA "%s:%d: stack@%p: in push [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
+
 
     // fprintf(fileerr, "Check push after realloc\n");
 
@@ -232,6 +240,8 @@ int StackRealloc(Stack_t* stk, int line) {
     ERRPRINTOK("")
     ONDEBAGHASH(stk->hash -= (size_t) stk->data);
 
+    printf(BLUE "%s:%d: stack@%p: before realloc [%p]\n", __FILE__, __LINE__, stk, stk->data);
+
     #ifdef CANARY
     StackElement_t* stkreal = (StackElement_t* ) realloc(stk->data, (2 * (size_t) stk->capasity + 2) * sizeof(stk->data[0]));
     #else
@@ -241,6 +251,7 @@ int StackRealloc(Stack_t* stk, int line) {
     // fprintf(fileerr, "stkreal[%p]\n", stkreal);
 
     if (stkreal != NULL) {
+        printf(BOLD_BLACK "\nCheck_realloc_change\n\n" RESET);
         stk->data = stkreal;
     }
     
@@ -269,6 +280,8 @@ int StackRealloc(Stack_t* stk, int line) {
     ONDEBAGCANARY(stk->data[stk->capasity + 1] = KANAREYKA);
 
     ERRPRINTOK("REALLOC OK\n")
+
+    printf(BLUE "%s:%d: stack@%p: after realloc [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
 
     return 0;
 }

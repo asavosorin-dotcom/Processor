@@ -273,12 +273,12 @@ int ProcessorDraw (Processor_t* processor)
     
     for (int i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') fprintf(fileerr, "%c ", processor->RAM[i]);
-        else                          fprintf(fileerr, "%c ", processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(fileout, "%c ", processor->RAM[i]);
+        else                          fprintf(fileout, "%c ", processor->RAM[i]);
 
         // printf("%d\n", i);
 
-        if ((i + 1) % 71 == 0) fprintf(fileerr, "\n");
+        if ((i + 1) % 71 == 0) fprintf(fileout, "\n");
     }
 
     processor->counter++;

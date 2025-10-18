@@ -28,4 +28,12 @@ enum COMMANDS{
     REM_G   = 23,
 };
 
+enum ASSEMBLER_ERR{
+    OK  = 0,
+    ERR = 1
+    // ERR_PUSHM      = 1,
+    // ERR_LABEL_NAME = 2,
+    // ERR_SEARCH_COMMAND = 4
+};
+
 #endif

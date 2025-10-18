@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "colors.h"
 #include "Logfile.h"
 
 // #define DEBUG
