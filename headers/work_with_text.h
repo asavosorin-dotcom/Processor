@@ -8,6 +8,8 @@
 
 #include <string.h>
 #include <stdlib.h>
+
+#include "stack.h"
 //' ', ' ', 5
 
 //sscanf(buff + i, "%d")
@@ -18,7 +20,7 @@ typedef struct {
     size_t buff_size;
 } Buffer;
 
-typedef struct {
+typedef struct { // поменять назад тип буфера
     int* buff;
     size_t buff_size;
 } BufferBin;

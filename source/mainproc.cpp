@@ -1,5 +1,7 @@
 #include "mainproc.h"
 
+#define RAM_SIZE 961
+
 FILE* fileerr = fopen("Logfile1.log", "w");
 FILE* fileout = fopen("Fileout.txt", "w");
 
@@ -32,7 +34,7 @@ void ProcessorCtor(Processor_t* processor)
     processor->counter = 0;
 
     INITSTACK(processor->ReturnStack, 10);
-    processor->RAM_size = 5041;
+    processor->RAM_size = RAM_SIZE;
     processor->RAM = (int* ) calloc(processor->RAM_size, sizeof(int));
 }
 

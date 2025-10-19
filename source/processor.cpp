@@ -1,7 +1,6 @@
 #include "processor.h"
 
-// #define DEBUG
-// 
+#define DRAW_STRING 31
 
 Processor_command_t arr_command[50] = { 
                             HLT_G  ,  0               , 
@@ -273,12 +272,12 @@ int ProcessorDraw (Processor_t* processor)
     
     for (int i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') fprintf(fileout, "%c ", processor->RAM[i]);
-        else                          fprintf(fileout, "%c ", processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_BLUE "%c " RESET, processor->RAM[i]);
+        else                          fprintf(stdout, "%c ", processor->RAM[i]);
 
         // printf("%d\n", i);
 
-        if ((i + 1) % 71 == 0) fprintf(fileout, "\n");
+        if ((i + 1) % DRAW_STRING == 0) fprintf(stdout, "\n");
     }
 
     processor->counter++;

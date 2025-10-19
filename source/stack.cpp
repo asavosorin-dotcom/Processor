@@ -1,10 +1,7 @@
 #include "stack.h"
 
-//memset
-
 // 0 0 0 0 0 0 0 0
 
-// fileerr - глобал, везде убрать
 size_t MaxNumOfStack = 4;
 size_t NumOfStack = 0;
 size_t* ArrPointData = (size_t* ) calloc(MaxNumOfStack, sizeof(size_t));
@@ -45,8 +42,6 @@ int StackCtor(Stack_t* stk, int capasity, int line, const char* stackname, const
     #else
         stk->data = (StackElement_t* ) calloc((size_t) capasity, sizeof(StackElement_t));
     #endif
-
-    printf(GREEN "after calloc [%p]\n" RESET, stk->data);
 
     #ifdef DEBUG
     if (stk->data == NULL) {
@@ -96,7 +91,7 @@ int StackPush(Stack_t* stk, StackElement_t elem, int line) {
 
     // fprintf(fileerr, "size in push = %d\n", (int) stk->size);
 
-    printf(MAGENTA "%s:%d: stack@%p: in push [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
+    // printf(MAGENTA "%s:%d: stack@%p: in push [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
 
     if ((int) stk->size == stk->capasity) {
         // fprintf(fileerr, "Check realloc\n");
@@ -104,7 +99,7 @@ int StackPush(Stack_t* stk, StackElement_t elem, int line) {
         REALLOC(*stk)
     }
 
-    printf(MAGENTA "%s:%d: stack@%p: in push [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
+    // printf(MAGENTA "%s:%d: stack@%p: in push [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
 
 
     // fprintf(fileerr, "Check push after realloc\n");
@@ -240,7 +235,7 @@ int StackRealloc(Stack_t* stk, int line) {
     ERRPRINTOK("")
     ONDEBAGHASH(stk->hash -= (size_t) stk->data);
 
-    printf(BLUE "%s:%d: stack@%p: before realloc [%p]\n", __FILE__, __LINE__, stk, stk->data);
+    // printf(BLUE "%s:%d: stack@%p: before realloc [%p]\n", __FILE__, __LINE__, stk, stk->data);
 
     #ifdef CANARY
     StackElement_t* stkreal = (StackElement_t* ) realloc(stk->data, (2 * (size_t) stk->capasity + 2) * sizeof(stk->data[0]));
@@ -251,7 +246,7 @@ int StackRealloc(Stack_t* stk, int line) {
     // fprintf(fileerr, "stkreal[%p]\n", stkreal);
 
     if (stkreal != NULL) {
-        printf(BOLD_BLACK "\nCheck_realloc_change\n\n" RESET);
+        // printf(BOLD_BLACK "\nCheck_realloc_change\n\n" RESET);
         stk->data = stkreal;
     }
     
@@ -281,7 +276,7 @@ int StackRealloc(Stack_t* stk, int line) {
 
     ERRPRINTOK("REALLOC OK\n")
 
-    printf(BLUE "%s:%d: stack@%p: after realloc [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
+    // printf(BLUE "%s:%d: stack@%p: after realloc [%p]\n" RESET, __FILE__, __LINE__, stk, stk->data);
 
     return 0;
 }

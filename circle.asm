@@ -1,9 +1,13 @@
 IN ; radius
+PUSH 5
+MUL
 
-PUSH 35 ; x0, y0
+PUSH 14 ; x0, y0
+PUSH 5
+MUL
 POPR RGX
 
-PUSH 71
+PUSH 31 ; длина строки
 POPR RHX
 
 POPR RAX
@@ -15,8 +19,8 @@ POPR RDX ; cчетчик
 
 :cir
 
-PUSHR RDX
-PUSH 5041
+PUSHR RDX 
+PUSH 961 ; количество ячеек
 
 JAE :end
 
@@ -69,12 +73,16 @@ J :cir
     PUSHR RDX
     PUSHR RHX
     REM
+    PUSH 5
+    MUL
     RET
 
 :y
     PUSHR RDX
     PUSHR RHX
     DIV
+    PUSH 6
+    MUL
     RET
 
 :pow

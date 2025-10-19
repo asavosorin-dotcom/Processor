@@ -9,7 +9,7 @@
 #include "colors.h"
 #include "commands_code.h"
 
-#define DEBUG_ASSEMBLER
+// #define DEBUG_ASSEMBLER
 
 typedef struct {
     char label_name[30];
@@ -50,6 +50,7 @@ int Assembler_Write_label (Assembler_t* assembler,  Compile_t* compile_struct);
 int Assembler_Jump         (Assembler_t* assembler, Compile_t* compile_struct);
 void Assembler_Register_Arg (Compile_t* compile_struct);
 int  Assembler_RAM (Compile_t* compile_struct);
+int Assembler_get_arg(Assembler_t* assembler, Compile_t* compile_struct, int command_index);
 
 int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct, int* i);
 
@@ -59,6 +60,6 @@ int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct,
     #define ONDEBUGASM(func)
 #endif
 
-#define PRINT_DEBUG(...) ONDEBUGASM(printf(__VA_ARGS__);)
+#define PRINT_DEBUG(COLOR, ...) ONDEBUGASM(printf(COLOR "%s:%d", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET))
 
 #endif

@@ -37,7 +37,7 @@ Command_t arr_command[50] = {
                             "REM"  , 4, REM_G
 };
 
-int num_command = 26;
+int num_command = 25;
 
 void CompileCtor(const char* commandfile, Compile_t* compile_struct)
 {
@@ -46,6 +46,7 @@ void CompileCtor(const char* commandfile, Compile_t* compile_struct)
 
     compile_struct->buffer = struct_buffer.buff;
     compile_struct->count_element = 0;
+    compile_struct->cmdStr = (char* ) calloc(30, sizeof(char));
 }
 
 void CompileDtor(Compile_t* compile_struct)
@@ -58,8 +59,7 @@ void Assembler_Push        (Compile_t* compile_struct)
 {
     int elem = 0;
     
-    PRINT_DEBUG(BOLD_BLUE "-------------------------------------------------------------------------------------------------\n")
-    PRINT_DEBUG("buffer_before_skip = %.10s\n", compile_struct->buffer)
+    PRINT_DEBUG(BLUE, "buffer_before_skip = %.10s\n", compile_struct->buffer);
     
     compile_struct->buffer = skip_space(compile_struct->buffer);
             
@@ -72,8 +72,6 @@ void Assembler_Push        (Compile_t* compile_struct)
     PUSH(compile_struct->stack, elem)
 
     compile_struct->count_element++;
-
-    PRINT_DEBUG("\n-------------------------------------------------------------------------------------------------\n" RESET)
 
 }
 
@@ -123,23 +121,28 @@ int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct,
     //     printf("----------------------------------------------------------------------------------------\n" RESET);
     // #endif
     
+    sscanf(compile_struct->buffer, "%s", compile_struct->cmdStr); 
+    // ONDEBUGASM(fprintf(stdout, "\ncompile_struct.cmdStr_after_label = %s\n", compile_struct->cmdStr));
     
     for (;strcmp(compile_struct->cmdStr, arr_command[*i].command_name) != 0; (*i)++) 
     {
-        // ONDEBUGASM(printf(BOLD_GREEN "i = %d\n", *i));
-        // PRINT_DEBUG("arr_command[%d] = %s\n", *i, arr_command[*i].command_name)
+        // ONDEBUGASM(printf(BOLD_GREEN "i = %d\n" RESET, *i));
+        // PRINT_DEBUG(BOLD_GREEN, "arr_command[%d] = %s\n", *i, arr_command[*i].command_name)
 
-        if (*i == num_command - 1)
+        if (*i == num_command - 2)
         {
-            printf(BOLD_RED "\nUnknown command!!!\n\n" RESET);
+            printf(BOLD_RED "\nUnknown command: %s!!!\n\n" RESET, compile_struct->cmdStr);
             return ERR;
         }
     }
 
+    compile_struct->buffer = skip_space(compile_struct->buffer);
+    compile_struct->count_element++;
+
     return OK;    
 }
 
-int Assembler_Jump         (Assembler_t* assembler, Compile_t* compile_struct)
+int Assembler_Jump          (Assembler_t* assembler, Compile_t* compile_struct)
 
 {
     compile_struct->buffer = skip_space(compile_struct->buffer);
@@ -196,7 +199,7 @@ void Assembler_Register_Arg (Compile_t* compile_struct)
     compile_struct->count_element++;
 }
 
-int Assembler_RAM (Compile_t* compile_struct)
+int Assembler_RAM           (Compile_t* compile_struct)
 {
     compile_struct->buffer = skip_space(compile_struct->buffer);
 
@@ -214,6 +217,41 @@ int Assembler_RAM (Compile_t* compile_struct)
     compile_struct->buffer += 6;
 
     compile_struct->count_element++;
+
+    return OK;
+}
+
+int Assembler_get_arg       (Assembler_t* assembler, Compile_t* compile_struct, int command_index)
+{
+    int err = 0;
+
+    if (command_index == PUSH_G) { 
+            Assembler_Push(compile_struct);
+        }
+        
+        if (command_index >= JB_G && command_index <= CALL_G) {
+            err = Assembler_Jump(assembler, compile_struct);
+
+            if (err)
+            {
+                printf(RED "Error Jump\n" RESET);
+                return ERR;
+            }
+        }
+
+        else if (command_index == PUSHR_G || command_index == POPR_G) { 
+            Assembler_Register_Arg(compile_struct);
+        }
+
+        else if (command_index == PUSHM_G || command_index == POPM_G) { 
+            err = Assembler_RAM(compile_struct);
+
+            if (err)
+            {
+                printf(RED "Error format pushm\n" RESET);
+                return ERR;
+            }
+        }
 
     return OK;
 }
@@ -236,87 +274,39 @@ void Compile(const char* commandfile, Assembler_t* assembler)
 
     compile_struct.buffer++;
 
-//-------------------------------------------------------------------------------------------------------------------------------------
-    compile_struct.cmdStr = (char* ) calloc(30, sizeof(char));
-//-------------------------------------------------------------------------------------------------------------------------------------
+
+    int err = 0;
 
     while (1) {
         compile_struct.buffer = skip_space(compile_struct.buffer);
 
         sscanf(compile_struct.buffer, "%s", compile_struct.cmdStr); //Проверка на scanf        
-        ONDEBUGASM(fprintf(stdout, "%s:%d: compile_struct->cmdStr = %s\n", __FILE__, __LINE__, compile_struct.cmdStr));
+        // ONDEBUGASM(fprintf(stdout, "%s:%d: compile_struct->cmdStr = %s\n", __FILE__, __LINE__, compile_struct.cmdStr));
         
         if (compile_struct.cmdStr[0] == ':') 
         {
-            int err = Assembler_Write_label(assembler, &compile_struct);
-            if (err == ERR)
-            {
-                printf(BOLD_RED "Error label name format\n" RESET);
-                break;
-            }
+            err = Assembler_Write_label(assembler, &compile_struct);
+            if (err) break;
         }
 
-        sscanf(compile_struct.buffer, "%s", compile_struct.cmdStr); //Проверка
-
-        // ONDEBUGASM(fprintf(stdout, "\ncompile_struct.cmdStr_after_label = %s\n", compile_struct->cmdStr));
-
         int command_index = 0;
-        int err = Assembler_Search_Command(assembler, &compile_struct, &command_index);
+        err = Assembler_Search_Command(assembler, &compile_struct, &command_index);
         
-        compile_struct.buffer = skip_space(compile_struct.buffer);
-
-        compile_struct.count_element++;
-
-        // PRINT_DEBUG("\nbuffer_before_command = %.10s\n", compile_struct->buffer)
-
-        #define $ printf(GREEN "%s:%d: stack@%p: data=[%p]\n" RESET, __FILE__, __LINE__, &compile_struct.stack, compile_struct.stack.data);
+        if (err) break;
 
         compile_struct.buffer += arr_command[command_index].command_size;
 
-        // PRINT_DEBUG("\nbuffer_after_command = %.10s\n", compile_struct->buffer)
-
-        $
-
-        PRINT_DEBUG("command_code = %d\n", arr_command[command_index].command_code)
-        // PRINT_DEBUG(GREEN "before push[%p]\n" RESET, compile_struct->stack.data) 
+        // PRINT_DEBUG("command_code = %d\n", arr_command[command_index].command_code)
         PUSH(compile_struct.stack, arr_command[command_index].command_code);
-        // PRINT_DEBUG(GREEN "after push [%p]\n" RESET, compile_struct->stack.data) 
-
-        $
-
-        err = 0;
-
-        if (command_index == PUSH_G) { // PUSH
-            Assembler_Push(&compile_struct);
-        }
         
-        if (command_index >= JB_G && command_index <= CALL_G) {
-            err = Assembler_Jump(assembler, &compile_struct);
+        err = Assembler_get_arg(assembler, &compile_struct, command_index);
 
-            if (err)
-            {
-                printf(RED "Error Jump\n");
-            }
-        }
+        if (err) break;
 
-        else if (command_index == PUSHR_G || command_index == POPR_G) { // проверка RAX
-            Assembler_Register_Arg(&compile_struct);
-        }
+        PRINT_DEBUG(MAGENTA, " meow!!");
 
-        else if (command_index == PUSHM_G || command_index == POPM_G) { // проверка RAX
-            err = Assembler_RAM(&compile_struct);
-
-            if (err)
-            {
-                printf(RED "Error format pushm\n" RESET);
-                break;
-            }
-        }
-
-        $
         compile_struct.buffer = strchr(compile_struct.buffer, '\n');
-        $
-
+        
         if (compile_struct.buffer == NULL)
             break;
     }
@@ -337,9 +327,9 @@ void Compile(const char* commandfile, Assembler_t* assembler)
     // return stack.data;
 }
 
-void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, size_t count_element) {
+void WriteBiteCodeFile(FILE* bitecode, int* arr, size_t count_element) {
     // for (int i = 0; i < count_element; i++) {
         // fprintf(bitecode, "%d ", arr[i]);
     // }
-    fwrite(arr, count_element, sizeof(StackElement_t), bitecode);
+    fwrite(arr, count_element, sizeof(int), bitecode);
 }
