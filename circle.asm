@@ -2,10 +2,15 @@ IN ; radius
 PUSH 5
 MUL
 
-PUSH 14 ; x0, y0
+IN ; x0
 PUSH 5
 MUL
 POPR RGX
+
+IN ; y0
+PUSH 6
+MUL
+POPR RIX
 
 PUSH 31 ; длина строки
 POPR RHX
@@ -30,7 +35,7 @@ SUB
 CALL :pow
 
 CALL :y
-PUSHR RGX
+PUSHR RIX
 SUB
 CALL :pow
 

@@ -16,7 +16,7 @@
 typedef struct {
     Stack_t         stack;
     StackElement_t* code;
-    StackElement_t  registers[8];
+    StackElement_t  registers[10];
     size_t          counter;
     Stack_t         ReturnStack;
     int*            RAM;

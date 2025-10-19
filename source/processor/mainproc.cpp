@@ -28,7 +28,7 @@ void ProcessorCtor(Processor_t* processor)
 
     processor->code = TextConvertToBite("bitecode.asm");
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 10; i++)
         processor->registers[0] = 0;
 
     processor->counter = 0;
@@ -44,4 +44,15 @@ void ProcessorDtor(Processor_t* processor)
     free(processor->RAM);
     DTOR(processor->stack);
     DTOR(processor->ReturnStack);
+}
+
+StackElement_t* TextConvertToBite(const char* filename) 
+{
+
+    BufferBin struct_buffer = CreateBufferBinary(filename);
+
+    StackElement_t* buffer = struct_buffer.buff;
+    assert(buffer);
+
+    return buffer;
 }
