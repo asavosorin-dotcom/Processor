@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <ctype.h>
 
 #include <string.h>
 #include <stdlib.h>
@@ -32,5 +33,7 @@ void   OutPutBuf(char* buffer, FILE* fileout, size_t numOfElemNew);
 
 Buffer CreateBuffer       (const char* filename);
 BufferBin CreateBufferBinary (const char* filename);
+
+char* skip_space(char* buffer);
 
 #endif

@@ -127,3 +127,12 @@ size_t Maxlen(char* buffer) {
 
     return (size_t) maxlen;
 }
+
+char* skip_space(char* buffer)
+{
+    while (isspace(*buffer)) {
+            buffer++;
+        }
+
+    return buffer;
+}

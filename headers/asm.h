@@ -36,8 +36,6 @@ typedef struct {
     char* cmdStr;
 } Compile_t;
 
-char* skip_space(char* buffer);
-
 void Compile(const char* commandfile, Assembler_t* assrembler);
 
 void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, size_t count_element);
@@ -45,10 +43,10 @@ void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, size_t count_element
 void CompileCtor(const char* commandfile, Compile_t* compile_struct);
 void CompileDtor(Compile_t* compile_struct);
 
-void Assembler_Push        (Compile_t* compile_struct);
+int Assembler_Push          (Compile_t* compile_struct);
 int Assembler_Write_label (Assembler_t* assembler,  Compile_t* compile_struct);
 int Assembler_Jump         (Assembler_t* assembler, Compile_t* compile_struct);
-void Assembler_Register_Arg (Compile_t* compile_struct);
+int Assembler_Register_Arg (Compile_t* compile_struct);
 int  Assembler_RAM (Compile_t* compile_struct);
 int Assembler_get_arg(Assembler_t* assembler, Compile_t* compile_struct, int command_index);
 
@@ -61,5 +59,7 @@ int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct,
 #endif
 
 #define PRINT_DEBUG(COLOR, ...) ONDEBUGASM(printf(COLOR "%s:%d", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET))
+
+#define BREAK if (err) break;
 
 #endif
