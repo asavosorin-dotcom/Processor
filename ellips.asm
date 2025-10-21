@@ -8,7 +8,7 @@ MUL
 POPR RGX
 
 IN ; y0
-PUSH 6
+PUSH 24
 MUL
 POPR RIX
 
@@ -86,7 +86,7 @@ J :cir
     PUSHR RDX
     PUSHR RHX
     DIV
-    PUSH 6
+    PUSH 24
     MUL
     RET
 

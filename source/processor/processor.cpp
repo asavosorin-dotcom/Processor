@@ -1,6 +1,6 @@
 #include "processor.h"
 
-#define DRAW_STRING 31
+#define DRAW_STRING 51
 
 Processor_command_t arr_command[50] = { 
                             HLT_G  ,  0               , 
@@ -28,6 +28,41 @@ Processor_command_t arr_command[50] = {
                             DRAW_G ,  ProcessorDraw   ,
                             REM_G  ,  ProcessorRemdiv
 };
+
+void Processor (Processor_t* processor) 
+{
+    
+    StackElement_t* arr          = processor->code;
+    StackElement_t* arr_register = processor->registers;
+
+    int err = 0;
+    int j = 0;
+    while (processor->code[processor->counter] != 0) {
+            int i = 0;
+
+            while (arr_command[i].command != processor->code[processor->counter]) {
+                i++;
+            }
+
+            #ifdef DEBUG
+            printf("code = %d\n", arr_command[i].command);
+            printf(YELLOW "adress = %d\n" RESET, processor->counter);
+            #endif
+
+            err = arr_command[i].func(processor);
+            if (err) break;
+
+            #ifdef DEBUG
+            printf("[%d]", j);
+            PRINTSTACK(processor->stack);
+            PrintArr(processor->RAM, 100);
+            int c = getchar();
+            #endif
+
+            j++;
+
+        }
+}
 
 void PrintArr(int* arr, int number_of_elem) // Спросить у Сани как сделать универсальный
 {
@@ -96,12 +131,55 @@ int ProcessorOut   (Processor_t* processor)
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 
+int ProcessorDiv   (Processor_t* processor) 
+{                                                                         
+    assert(processor);                                                    
+                                                                          
+    StackElement_t elem1 = 0;                                             
+    StackElement_t elem2 = 0;                                             
+                                                                          
+    int err = POP(processor->stack, elem1);                               
+    err |= POP(processor->stack, elem2);                                  
+                                    
+    if (elem1 == 0)
+    {
+        printf(RED "Division on 0\n" RESET);
+        return ERR;
+    }
+
+    err |= PUSH(processor->stack, elem2 / elem1);                            
+    processor->counter++;                                                 
+                                                                          
+                                                                          
+    return err;                                                           
+}
+
+int ProcessorRemdiv   (Processor_t* processor) 
+{                                                                         
+    assert(processor);                                                    
+                                                                          
+    StackElement_t elem1 = 0;                                             
+    StackElement_t elem2 = 0;                                             
+                                                                          
+    int err = POP(processor->stack, elem1);                               
+    err |= POP(processor->stack, elem2);                                  
+                                    
+    if (elem1 == 0)
+    {
+        printf(RED "Division on 0\n" RESET);
+        return ERR;
+    }
+
+    err |= PUSH(processor->stack, elem2 % elem1);                            
+    processor->counter++;                                                 
+                                                                          
+                                                                          
+    return err;                                                           
+}
+
 IMPL_BASE_OP(Add,    +)
 IMPL_BASE_OP(Sub,    -)
 IMPL_BASE_OP(Mul,    *)
-IMPL_BASE_OP(Div,    /)
-IMPL_BASE_OP(Remdiv, %)
-
 
 int ProcessorSqr   (Processor_t* processor) 
 {    
@@ -272,7 +350,7 @@ int ProcessorDraw (Processor_t* processor)
     
     for (int i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_BLUE "%c " RESET, processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_GREEN "%c " RESET, processor->RAM[i]);
         else                          fprintf(stdout, "%c ", processor->RAM[i]);
 
         // printf("%d\n", i);
@@ -282,37 +360,4 @@ int ProcessorDraw (Processor_t* processor)
 
     processor->counter++;
     return err;
-}
-
-void Processor (Processor_t* processor) 
-{
-    
-    StackElement_t* arr          = processor->code;
-    StackElement_t* arr_register = processor->registers;
-
-    int j = 0;
-    while (processor->code[processor->counter] != 0) {
-            int i = 0;
-
-            while (arr_command[i].command != processor->code[processor->counter]) {
-                i++;
-            }
-
-            #ifdef DEBUG
-            printf("code = %d\n", arr_command[i].command);
-            printf(YELLOW "adress = %d\n" RESET, processor->counter);
-            #endif
-
-            arr_command[i].func(processor);
-
-            #ifdef DEBUG
-            printf("[%d]", j);
-            PRINTSTACK(processor->stack);
-            PrintArr(processor->RAM, 100);
-            int c = getchar();
-            #endif
-
-            j++;
-
-        }
 }
