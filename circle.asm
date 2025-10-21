@@ -16,8 +16,6 @@ PUSH 51 ; длина строки
 POPR RHX
 
 POPR RAX
-PUSHR RAX
-OUT
 
 PUSH 0
 POPR RDX ; cчетчик
@@ -53,8 +51,6 @@ CALL :inc
 J :cir
 
 :dot
-    PUSHR RAX
-    OUT
     PUSH 46
     POPM [RDX]
     CALL :inc
@@ -70,8 +66,6 @@ J :cir
     PUSH 1
     ADD
     POPR RDX
-    PUSHR RDX
-    OUT
     RET
 
 :x

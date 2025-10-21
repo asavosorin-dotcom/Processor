@@ -350,7 +350,7 @@ int ProcessorDraw (Processor_t* processor)
     
     for (int i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_GREEN "%c " RESET, processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_RED "%c " RESET, processor->RAM[i]);
         else                          fprintf(stdout, "%c ", processor->RAM[i]);
 
         // printf("%d\n", i);
