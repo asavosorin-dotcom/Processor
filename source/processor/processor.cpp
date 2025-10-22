@@ -2,64 +2,31 @@
 
 #define DRAW_STRING 51
 
-Processor_command_t arr_command[50] = { 
-                            HLT_G  ,  0               , 
-                            PUSH_G ,  ProcessorPush   ,
-                            MUL_G  ,  ProcessorMul    ,
-                            SUB_G  ,  ProcessorSub    ,
-                            OUT_G  ,  ProcessorOut    ,
-                            DIV_G  ,  ProcessorDiv    ,  
-                            ADD_G  ,  ProcessorAdd    , 
-                            SQRT_G ,  ProcessorSqr    , 
-                            IN_G   ,  ProcessorIn     ,
-                            POPR_G ,  ProcessorPopr   ,
-                            PUSHR_G,  ProcessorPushr  ,
-                            JB_G   ,  ProcessorJump_B ,
-                            JBE_G  ,  ProcessorJump_BE,
-                            JA_G   ,  ProcessorJump_A ,
-                            JAE_G  ,  ProcessorJump_AE,
-                            JE_G   ,  ProcessorJump_E ,
-                            JNE_G  ,  ProcessorJump_NE,
-                            J_G    ,  ProcessorJump   ,
-                            CALL_G ,  ProcessorCall   ,
-                            RET_G  ,  ProcessorRet    ,
-                            PUSHM_G,  ProcessorPushm  ,
-                            POPM_G ,  ProcessorPopm   ,
-                            DRAW_G ,  ProcessorDraw   ,
-                            REM_G  ,  ProcessorRemdiv
-};
+// количество
 
-void Processor (Processor_t* processor) 
+void Processor (Processor_t* processor, Processor_command_t* arr_command) 
 {
     
     StackElement_t* arr          = processor->code;
     StackElement_t* arr_register = processor->registers;
 
     int err = 0;
-    int j = 0;
+    ONDEBUGPROC(int command_counter = 0;) 
     while (processor->code[processor->counter] != 0) {
-            int i = 0;
-
-            while (arr_command[i].command != processor->code[processor->counter]) {
-                i++;
-            }
-
             #ifdef DEBUG
-            printf("code = %d\n", arr_command[i].command);
             printf(YELLOW "adress = %d\n" RESET, processor->counter);
             #endif
 
-            err = arr_command[i].func(processor);
+            err = arr_command[processor->code[processor->counter]].func(processor);
             if (err) break;
 
             #ifdef DEBUG
-            printf("[%d]", j);
+            printf("[%d]", command_counter);
             PRINTSTACK(processor->stack);
             PrintArr(processor->RAM, 100);
             int c = getchar();
+            command_counter++;
             #endif
-
-            j++;
 
         }
 }
@@ -179,7 +146,7 @@ int ProcessorRemdiv   (Processor_t* processor)
 
 IMPL_BASE_OP(Add,    +)
 IMPL_BASE_OP(Sub,    -)
-IMPL_BASE_OP(Mul,    *)
+IMPL_BASE_OP(Mul,    *) // 3 параметр, подставляющий if 
 
 int ProcessorSqr   (Processor_t* processor) 
 {    

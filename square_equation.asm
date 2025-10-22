@@ -72,6 +72,10 @@ HLT
     HLT
 
 :5
+    PUSHR RBX
+    PUSH 0
+    JE :b_zero
+    
     PUSH -1
     OUT
     PUSHR RCX
@@ -80,4 +84,19 @@ HLT
     PUSHR RBX
     DIV
     OUT
+    HLT
+
+:b_zero
+    PUSHR RCX 
+    PUSH 0
+    JE :c_zero
+
+    PUSH 0
+    OUT
+    HLT
+
+:c_zero
+    PUSH 8
+    OUT
+    
     HLT

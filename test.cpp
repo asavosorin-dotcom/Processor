@@ -3,21 +3,25 @@
 #include <string.h>
 #include <ctype.h>
 
-char* skip_space(char* buffer);
+int CountHash(const char* string);
 
-int main() {
-    char* buffer = (char* ) calloc(30, sizeof(char));
-    strcpy(buffer, "             125");
-
-    buffer = skip_space(buffer);
-    printf("%s\n", buffer);
+int main() 
+{
+    const char* string = "JA\0";
+    printf("hash = %d\n", CountHash(string));    
 }
 
-char* skip_space(char* buffer)
+int CountHash(const char* string)
 {
-    while (isspace(*buffer)) {
-            buffer++;
-        }
+    int hash = 0;
 
-    return buffer;
+    while (*string != '\0')
+    {
+        printf("meow\n");
+        printf("[%c] = [%d]\n", *string, *string);
+        hash = hash * 91 + *string;
+        string++;
+    }
+
+    return hash;
 }

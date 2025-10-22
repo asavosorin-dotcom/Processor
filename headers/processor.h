@@ -23,6 +23,7 @@ typedef struct {
     size_t          RAM_size;
 } Processor_t;
 
+
 typedef struct {
     COMMANDS command;
     int (*func) (Processor_t*);
@@ -54,9 +55,7 @@ int ProcessorPushm   (Processor_t* processor);
 int ProcessorPopm    (Processor_t* processor);
 int ProcessorDraw    (Processor_t* processor);
 
-void Processor(Processor_t* processor);
-
-extern Processor_command_t arr_command[50];
+void Processor(Processor_t* processor, Processor_command_t* arr_command);
 
 #define ADD(stk)  add(&stk)
 #define SUB(stk)  sub(&stk)
@@ -69,5 +68,8 @@ extern Processor_command_t arr_command[50];
 #else
     #define ONDEBUGPROC(func)
 #endif
+
+#define ADD_COMMAND(name, code, function) name[code].command = code; \
+                                          name[code].func = function;
 
 #endif

@@ -8,38 +8,11 @@
 //enum type
 
 //PUSH 80 ;comment\n
-//
+// перенести все комманды
 
-Command_t arr_command[50] = {
-                            "HLT"  , 4, HLT_G  , 
-                            "PUSH" , 5, PUSH_G ,
-                            "MUL"  , 4, MUL_G  , 
-                            "SUB"  , 4, SUB_G  ,
-                            "OUT"  , 4, OUT_G  ,
-                            "DIV"  , 4, DIV_G  , 
-                            "ADD"  , 4, ADD_G  ,  
-                            "SQRT" , 5, SQRT_G , 
-                            "IN"   , 3, IN_G   ,
-                            "POPR" , 5, POPR_G , 
-                            "PUSHR", 6, PUSHR_G,
-                            "JB"   , 3, JB_G   ,
-                            "JBE"  , 4, JBE_G  ,
-                            "JA"   , 3, JA_G   ,
-                            "JAE"  , 4, JAE_G  ,
-                            "JE"   , 3, JE_G   ,
-                            "JNE"  , 4, JNE_G  ,
-                            "J"    , 2, J_G    ,
-                            "CALL" , 5, CALL_G ,
-                            "RET"  , 4, RET_G  ,
-                            "PUSHM", 6, PUSHM_G,
-                            "POPM" , 5, POPM_G ,
-                            "DRAW" , 5, DRAW_G ,
-                            "REM"  , 4, REM_G
-};
+int num_command = 30;
 
-int num_command = 25;
-
-void Compile(const char* commandfile, Assembler_t* assembler) 
+void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_command) 
 {
     Compile_t compile_struct = {};
     CompileCtor(commandfile, &compile_struct);
@@ -64,25 +37,27 @@ void Compile(const char* commandfile, Assembler_t* assembler)
         }
 
         int command_index = 0;
-        err = Assembler_Search_Command(assembler, &compile_struct, &command_index);
+        err = Assembler_Search_Command(assembler, &compile_struct, &command_index, arr_command);
         
         BREAK
 
         compile_struct.buffer += arr_command[command_index].command_size;
 
-        // PRINT_DEBUG("command_code = %d\n", arr_command[command_index].command_code)
+        PRINT_DEBUG(BOLD_BLUE, "\ncommand_name = [%s]\n", arr_command[command_index].command_name);
+        PRINT_DEBUG(MAGENTA,"\ncommand_hash = [%zu]\n", arr_command[command_index].command_hash);
+        PRINT_DEBUG(GREEN,  "command_code = [%d]\n\n", arr_command[command_index].command_code);
         PUSH(compile_struct.stack, arr_command[command_index].command_code);
         
         err = Assembler_get_arg(assembler, &compile_struct, command_index);
 
         BREAK
 
-        PRINT_DEBUG(MAGENTA, " meow!!");
-
         compile_struct.buffer = strchr(compile_struct.buffer, '\n');
         
         if (compile_struct.buffer == NULL)
             break;
+
+        // int c = getchar();
     }
 
     // открывать файл с байт-кодом и печатать его туда
@@ -100,7 +75,6 @@ void Compile(const char* commandfile, Assembler_t* assembler)
 
     // return stack.data;
 }
-
 
 void CompileCtor(const char* commandfile, Compile_t* compile_struct)
 {
@@ -156,21 +130,21 @@ int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct
     return OK;
 }
 
-int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct, int* i)
+int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct, int* i, Command_t* arr_command)
 {    
-    // #ifdef DEBUG_ASSEMBLER
-    //     printf(BOLD_GREEN "----------------------------------------------------------------------------------------\nIn Search_Commnad\n");
-    //     printf("i = %d\n", *i);
-    //     printf("----------------------------------------------------------------------------------------\n" RESET);
-    // #endif
+    #ifdef DEBUG_ASSEMBLER
+        printf(BOLD_GREEN "----------------------------------------------------------------------------------------\nIn Search_Commnad\n");
+        printf("i = %d\n", *i);
+        printf("----------------------------------------------------------------------------------------\n" RESET);
+    #endif
     
     sscanf(compile_struct->buffer, "%s", compile_struct->cmdStr); 
     // ONDEBUGASM(fprintf(stdout, "\ncompile_struct.cmdStr_after_label = %s\n", compile_struct->cmdStr));
     
-    for (;strcmp(compile_struct->cmdStr, arr_command[*i].command_name) != 0; (*i)++) 
+    for (*i = 0;CountHash(compile_struct->cmdStr) != arr_command[*i].command_hash ; (*i)++) 
     {
         // ONDEBUGASM(printf(BOLD_GREEN "i = %d\n" RESET, *i));
-        // PRINT_DEBUG(BOLD_GREEN, "arr_command[%d] = %s\n", *i, arr_command[*i].command_name)
+        // PRINT_DEBUG(BOLD_GREEN, "arr_command[%d] = %s\n", *i, arr_command[*i].command_name);
 
         if (*i == num_command - 2)
         {
@@ -276,7 +250,7 @@ int Assembler_Push           (Compile_t* compile_struct)
 {
     int elem = 0;
     
-    PRINT_DEBUG(BLUE, "buffer_before_skip = %.10s\n", compile_struct->buffer);
+    // PRINT_DEBUG(BLUE, "buffer_before_skip = %.10s\n", compile_struct->buffer);
     
     compile_struct->buffer = skip_space(compile_struct->buffer);
             
@@ -336,4 +310,17 @@ void WriteBiteCodeFile(FILE* bitecode, int* arr, size_t count_element) {
         // fprintf(bitecode, "%d ", arr[i]);
     // }
     fwrite(arr, count_element, sizeof(int), bitecode);
+}
+
+size_t CountHash(const char* string)
+{
+    size_t hash = 0;
+
+    while (*string != '\0')
+    {
+        hash = hash * 91 + *string;
+        string++;
+    }
+
+    return hash;
 }

@@ -13,6 +13,8 @@
 void ProcessorCtor(Processor_t* processor);
 void ProcessorDtor(Processor_t* processor);
 
+void Processor_Init_ArrCommand(Processor_command_t* arr_command);
+
 StackElement_t* TextConvertToBite(const char* filename);
 
 #endif

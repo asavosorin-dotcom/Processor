@@ -8,6 +8,7 @@ HLT
 :factorial
     POPR RCX
     PUSHR RCX
+    
     PUSHR RCX
     PUSH 1
     JE :5
@@ -19,6 +20,7 @@ HLT
     PUSH 1
     SUB
     CALL :factorial
+
     MUL
     :5
     RET
