@@ -1,6 +1,8 @@
 #ifndef ASM_H
 #define ASM_H
 
+#include "TXLib.h"
+
 #include <stdio.h>
 #include <ctype.h>
 
@@ -14,8 +16,8 @@
 // #define DEBUG_ASSEMBLER
 
 typedef struct {
-    char label_name[30];
-    int label_value;
+    size_t label_hash;
+    int    label_value;
 } Label_t;
 
 typedef struct {
@@ -55,7 +57,7 @@ int Assembler_Register_Arg (Compile_t* compile_struct);
 int Assembler_RAM          (Compile_t* compile_struct);
 int Assembler_get_arg      (Assembler_t* assembler, Compile_t* compile_struct, int command_index);
 
-int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct, int* i, Command_t* arr_command);
+int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_command);
 
 #ifdef DEBUG_ASSEMBLER
     #define ONDEBUGASM(func) func
@@ -67,7 +69,7 @@ int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct,
 
 #define BREAK if (err) break;
 
-#define ADD_ARR_COMMANDS(name, comm_name, size, code)       name[code].command_name = comm_name;               \ 
+#define ADD_ARR_COMMANDS(name, comm_name, size, code)       name[code].command_name = comm_name;               \
                                                             name[code].command_hash = CountHash(comm_name);    \
                                                             name[code].command_size = size;                    \
                                                             name[code].command_code = code;

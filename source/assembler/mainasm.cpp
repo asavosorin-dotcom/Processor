@@ -1,8 +1,9 @@
 #include "mainasm.h"
 
-FILE* fileerr = fopen("Logfile.log", "w");
+FILE* fileerr      = fopen("Logfile.log", "w");
+FILE* file_listing = fopen("file_listing.txt", "w");
 
-int main(int argc, char* argv[]) {
+int main(int /*argc*/, char* argv[]) {
     
     Assembler_t assembler = {};
     AssemblerCtor(&assembler);
@@ -27,6 +28,7 @@ int main(int argc, char* argv[]) {
     fclose(fileerr);
     printf(BOLD_GREEN "\nSUCCES!\n" RESET);
     free(arr_command);
+    if (file_listing) fclose(file_listing);
 
     return 0;
 }
@@ -35,7 +37,7 @@ void AssemblerCtor(Assembler_t* assembler)
 {
     for (int i = 0; i < LABEL_SIZE; i++) // иницализация массива labels
     {
-        assembler->label[i] = {"", -1};
+        assembler->label[i] = {0, -1};
     }
     
     assembler->label_index = 0;

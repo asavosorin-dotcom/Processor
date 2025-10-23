@@ -1,10 +1,13 @@
 #ifndef _MAINPROC_H_
 #define _MAINPROC_H_
 
+#include "TXLib.h"
+#include <stdlib.h>
+#include "processor.h"
+
 #include <stdio.h>
 #include <ctype.h>
 
-#include "processor.h"
 // #include "bite.h"
 #include "Logfile.h"
 #include "stack.h"

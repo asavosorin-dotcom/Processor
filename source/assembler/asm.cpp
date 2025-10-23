@@ -4,12 +4,6 @@
 
 //2 80 2 40 54
 
-//union
-//enum type
-
-//PUSH 80 ;comment\n
-// перенести все комманды
-
 int num_command = 30;
 
 void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_command) 
@@ -20,7 +14,6 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
     char* buf_for_free = compile_struct.buffer;
 
     compile_struct.buffer++;
-
 
     int err = 0;
 
@@ -37,15 +30,17 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
         }
 
         int command_index = 0;
-        err = Assembler_Search_Command(assembler, &compile_struct, &command_index, arr_command);
+        err = Assembler_Search_Command(&compile_struct, &command_index, arr_command);
         
         BREAK
 
         compile_struct.buffer += arr_command[command_index].command_size;
 
-        PRINT_DEBUG(BOLD_BLUE, "\ncommand_name = [%s]\n", arr_command[command_index].command_name);
-        PRINT_DEBUG(MAGENTA,"\ncommand_hash = [%zu]\n", arr_command[command_index].command_hash);
-        PRINT_DEBUG(GREEN,  "command_code = [%d]\n\n", arr_command[command_index].command_code);
+        fprintf(file_listing, "%3d:       %-8d%-8s\n" , compile_struct.count_element, arr_command[command_index].command_code, arr_command[command_index].command_name);
+
+        // PRINT_DEBUG(BOLD_BLUE, "\ncommand_name = [%s]\n", arr_command[command_index].command_name);
+        // PRINT_DEBUG(MAGENTA,"\ncommand_hash = [%zu]\n", arr_command[command_index].command_hash);
+        // PRINT_DEBUG(GREEN,  "command_code = [%d]\n\n", arr_command[command_index].command_code);
         PUSH(compile_struct.stack, arr_command[command_index].command_code);
         
         err = Assembler_get_arg(assembler, &compile_struct, command_index);
@@ -61,7 +56,7 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
     }
 
     // открывать файл с байт-кодом и печатать его туда
-    FILE* bitecode = fopen("bitecode.asm", "wb");
+    FILE* bitecode = fopen("bitecode.bin", "wb");
     fprintf(fileerr, "count_elem = %d\n", compile_struct.count_element);
 
     assembler->label_count = assembler->label_index;
@@ -71,14 +66,15 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
     
     free(buf_for_free);
     CompileDtor(&compile_struct);
-    fclose(bitecode);
-
+    if (bitecode) fclose(bitecode);
     // return stack.data;
 }
 
 void CompileCtor(const char* commandfile, Compile_t* compile_struct)
 {
     Buffer struct_buffer = CreateBuffer(commandfile);
+    
+
     INITSTACK(compile_struct->stack, 7);
 
     compile_struct->buffer = struct_buffer.buff;
@@ -106,17 +102,19 @@ int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct
         // label[label_index] = count_element;
     #endif
 
-    if (sscanf(compile_struct->buffer, "%s", assembler->label[assembler->label_index].label_name ) != 1)
+    char label_name[30] = "";
+    if (sscanf(compile_struct->buffer, "%s", label_name) != 1)
     {
         printf(BOLD_RED "Error reading label name\n");
         return ERR;
     }
-     
+    
+    assembler->label[assembler->label_index].label_hash = CountHash(label_name);
     assembler->label[assembler->label_index].label_value = compile_struct->count_element; 
 
     #ifdef DEBUG_ASSEMBLER
         printf(BLUE "-----------------------------------------------------------------------\nSTART label\n\n");
-        printf("label[%d] = %s %d\n",assembler->label_index, assembler->label[assembler->label_index].label_name, assembler->label[assembler->label_index].label_value);
+        printf("label[%d] = %zu %d\n",assembler->label_index, assembler->label[assembler->label_index].label_hash, assembler->label[assembler->label_index].label_value);
         printf("\nEND label\n-----------------------------------------------------------------------\n\n" RESET);
     #endif
 
@@ -130,13 +128,13 @@ int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct
     return OK;
 }
 
-int Assembler_Search_Command (Assembler_t* assembler, Compile_t* compile_struct, int* i, Command_t* arr_command)
+int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_command)
 {    
-    #ifdef DEBUG_ASSEMBLER
-        printf(BOLD_GREEN "----------------------------------------------------------------------------------------\nIn Search_Commnad\n");
-        printf("i = %d\n", *i);
-        printf("----------------------------------------------------------------------------------------\n" RESET);
-    #endif
+    // #ifdef DEBUG_ASSEMBLER
+    //     printf(BOLD_GREEN "----------------------------------------------------------------------------------------\nIn Search_Commnad\n");
+    //     printf("i = %d\n", *i);
+    //     printf("----------------------------------------------------------------------------------------\n" RESET);
+    // #endif
     
     sscanf(compile_struct->buffer, "%s", compile_struct->cmdStr); 
     // ONDEBUGASM(fprintf(stdout, "\ncompile_struct.cmdStr_after_label = %s\n", compile_struct->cmdStr));
@@ -183,7 +181,7 @@ int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct)
 
     for (; i < assembler->label_count; i++)
     {
-        if (strcmp(assembler->label[i].label_name, label_name) == 0)
+        if (assembler->label[i].label_hash == CountHash(label_name))
             break;
     }
 
@@ -191,7 +189,7 @@ int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct)
         printf(MAGENTA"------------------------------------------------------------------\nJUMP\n\n");
         printf("index_in_label = %d\n", i);
         printf("elem = %d\n", assembler->label[i].label_value);
-        printf("label_name = %s\n", assembler->label[i].label_name);
+        printf("label_name = %d\n", assembler->label[i].label_hash);
         printf("\nEND_OF_JUMP\n------------------------------------------------------------------\n"RESET);
     #endif
 
@@ -312,14 +310,14 @@ void WriteBiteCodeFile(FILE* bitecode, int* arr, size_t count_element) {
     fwrite(arr, count_element, sizeof(int), bitecode);
 }
 
-size_t CountHash(const char* string)
+size_t CountHash(const char* str)
 {
     size_t hash = 0;
 
-    while (*string != '\0')
+    while (*str != '\0')
     {
-        hash = hash * 91 + *string;
-        string++;
+        hash = hash * 91 + *str;
+        str++;
     }
 
     return hash;

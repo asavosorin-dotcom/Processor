@@ -6,7 +6,7 @@ size_t MaxNumOfStack = 4;
 size_t NumOfStack = 0;
 size_t* ArrPointData = (size_t* ) calloc(MaxNumOfStack, sizeof(size_t));
 
-int StackCtor(Stack_t* stk, int capasity, int line, const char* stackname, const char* funcname) {
+int StackCtor(Stack_t* stk, int capasity, int ONDEBAG(line), const char* ONDEBAG(stackname), const char* ONDEBAG(funcname)) {
     assert(stk);
     
     #ifdef DEBUG
@@ -81,7 +81,7 @@ int StackCtor(Stack_t* stk, int capasity, int line, const char* stackname, const
     return err;
 }
 // ver
-int StackPush(Stack_t* stk, StackElement_t elem, int line) {
+int StackPush(Stack_t* stk, StackElement_t elem, int ONDEBAG(line)) {
     assert(stk);
     int err = 0;
 
@@ -124,7 +124,7 @@ int StackPush(Stack_t* stk, StackElement_t elem, int line) {
     return err;
 }
 
-int StackPop(Stack_t* stk, StackElement_t* elem, int line) {
+int StackPop(Stack_t* stk, StackElement_t* elem, int ONDEBAG(line)) {
     assert(stk);
     assert(elem);
 
@@ -173,7 +173,7 @@ int StackPop(Stack_t* stk, StackElement_t* elem, int line) {
     return err;
 }
 
-int StackTop(Stack_t* stk, StackElement_t* elem, int line) {
+int StackTop(Stack_t* stk, StackElement_t* elem, int ONDEBAG(line)) {
     
     int err = 0;
     
@@ -204,7 +204,7 @@ int StackTop(Stack_t* stk, StackElement_t* elem, int line) {
     return err;
 }
 
-int StackDtor(Stack_t* stk, int line) {
+int StackDtor(Stack_t* stk, int ONDEBAG(line)) {
     
     int err = 0;
 
@@ -228,8 +228,8 @@ int StackDtor(Stack_t* stk, int line) {
 //0x10 
 //0x55
 
-int StackRealloc(Stack_t* stk, int line) {
-    int err = 0;
+int StackRealloc(Stack_t* stk, int ONDEBAG(line)) {
+    ONDEBAG(int err = 0;)
     
     
     ERRPRINTOK("")
@@ -439,7 +439,7 @@ size_t StackHash(Stack_t* stk) {
 
 #endif
 
-int StackPrint(Stack_t* stk, int line) {
+int StackPrint(Stack_t* stk, int ONDEBAG(line)) {
     int err = 0;
     
     #ifdef DEBUG

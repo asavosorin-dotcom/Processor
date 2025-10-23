@@ -6,7 +6,7 @@ Buffer CreateBuffer(const char* filename) {
     Buffer point_struct = {0};
     // assert(struct_buf);
 
-    FILE* file = fopen(filename, "r");
+    FILE* file = fopen(filename, "rb");
 
     assert(file);
 
@@ -91,15 +91,15 @@ size_t CountStr(const char* buffer) {
     return ++count;
 }
 
-void OutPutBuf(char* buffer, FILE* fileout, size_t numOfElemNew) {
+void OutPutBuf(char* buffer, FILE* file, size_t numOfElemNew) {
     for (size_t i = 0; i < numOfElemNew; i++) {
-        fputc(buffer[i]? buffer[i] : '\n', fileout);
+        fputc(buffer[i]? buffer[i] : '\n', file);
 
         if (buffer[i] == '\n')
-            fputs("\\n \n", fileout);
+            fputs("\\n \n", file);
 
         if (buffer[i] == '\0')
-            fprintf(fileout, "0\n");
+            fprintf(file, "0\n");
     }
         
 

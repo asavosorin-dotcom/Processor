@@ -5,5 +5,6 @@
 
 extern FILE* fileerr;
 extern FILE* fileout;
+extern FILE* file_listing;
 
 #endif

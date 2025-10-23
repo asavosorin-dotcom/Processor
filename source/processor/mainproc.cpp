@@ -29,7 +29,7 @@ void ProcessorCtor(Processor_t* processor)
 {
     INITSTACK(processor->stack, 10);
 
-    processor->code = TextConvertToBite("bitecode.asm");
+    processor->code = TextConvertToBite("bytecode.bin");
 
     for (int i = 0; i < 10; i++)
         processor->registers[0] = 0;

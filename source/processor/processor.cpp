@@ -313,6 +313,8 @@ int ProcessorJump (Processor_t* processor)
                                  
 int ProcessorDraw (Processor_t* processor)
 {
+    // txCreateWindow(1000, 1000);
+    
     int err = 0;
     
     for (int i = 0; i < processor->RAM_size; i++)
