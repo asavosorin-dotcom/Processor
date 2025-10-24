@@ -6,10 +6,6 @@
 
 void Processor (Processor_t* processor, Processor_command_t* arr_command) 
 {
-    
-    StackElement_t* arr          = processor->code;
-    StackElement_t* arr_register = processor->registers;
-
     int err = 0;
     ONDEBUGPROC(int command_counter = 0;) 
     while (processor->code[processor->counter] != 0) {
@@ -31,16 +27,16 @@ void Processor (Processor_t* processor, Processor_command_t* arr_command)
         }
 }
 
-void PrintArr(int* arr, int number_of_elem) // Спросить у Сани как сделать универсальный
+void PrintArr(int* arr, int number_of_elem) 
 {
     // printf(MAGENTA"-----------------------------------------------------------\n\nRAM");
     printf(MAGENTA);
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < number_of_elem; i++)
     {
         printf("%d ", arr[i]);
     }
 
-    printf("\n"RESET);
+    printf("\n" RESET);
     // printf("\n\n-----------------------------------------------------------\n"RESET);
 }
 
@@ -225,8 +221,8 @@ int ProcessorCall  (Processor_t* processor)
 {    
     int err = 0;
     
-    PUSH(processor->ReturnStack, processor->counter + 2);
-    ONDEBUGPROC(printf(MAGENTA"\nadress_call = %d\n"RESET, processor->counter + 2));
+    PUSH(processor->ReturnStack, (int) processor->counter + 2);
+    ONDEBUGPROC(printf(MAGENTA " \nadress_call = %d\n" RESET, processor->counter + 2));
     ProcessorJump (processor);
 
     return err;
@@ -266,7 +262,7 @@ int ProcessorPopm  (Processor_t* processor)
     ProcessorPushr(processor);
     POP(processor->stack, val);
 
-    ONDEBUGPROC(printf(YELLOW"\nPOPM\nval = %d\n\n"RESET, val));
+    ONDEBUGPROC(printf(YELLOW " \nPOPM\nval = %d\n\n" RESET, val));
 
     POP(processor->stack, processor->RAM[val]);
 
@@ -317,7 +313,7 @@ int ProcessorDraw (Processor_t* processor)
     
     int err = 0;
     
-    for (int i = 0; i < processor->RAM_size; i++)
+    for (size_t i = 0; i < processor->RAM_size; i++)
     {
         if (processor->RAM[i] == '*') fprintf(stdout, BOLD_RED "%c " RESET, processor->RAM[i]);
         else                          fprintf(stdout, "%c ", processor->RAM[i]);

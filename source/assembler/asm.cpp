@@ -74,7 +74,6 @@ void CompileCtor(const char* commandfile, Compile_t* compile_struct)
 {
     Buffer struct_buffer = CreateBuffer(commandfile);
     
-
     INITSTACK(compile_struct->stack, 7);
 
     compile_struct->buffer = struct_buffer.buff;

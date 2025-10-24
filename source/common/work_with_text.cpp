@@ -6,19 +6,19 @@ Buffer CreateBuffer(const char* filename) {
     Buffer point_struct = {0};
     // assert(struct_buf);
 
-    FILE* file = fopen(filename, "rb");
+    FILE* file = fopen(filename, "r");
 
     assert(file);
 
-    size_t numOfElem    = SizeOfFile(filename) / sizeof(char);
-    char* buffer        = (char* ) calloc(numOfElem + 20, sizeof(char));
-    size_t numOfElemNew = fread(buffer + 1, sizeof(char), numOfElem + 2, file);
+    size_t numOfElem = SizeOfFile(filename) / sizeof(char);
+    char* buffer = (char* ) calloc(numOfElem + 2, sizeof(char));
+    size_t numOfElemNew = fread(buffer + 1, sizeof(char), numOfElem + 1, file);
 
     // point_struct->buff = buffer;
     // point_struct->buff_size = numOfElemNew;
 
     point_struct.buff = buffer;
-    point_struct.buff_size = numOfElemNew;  
+    point_struct.buff_size = numOfElemNew;
 
     fclose(file);
 
@@ -91,17 +91,9 @@ size_t CountStr(const char* buffer) {
     return ++count;
 }
 
-void OutPutBuf(char* buffer, FILE* file, size_t numOfElemNew) {
-    for (size_t i = 0; i < numOfElemNew; i++) {
-        fputc(buffer[i]? buffer[i] : '\n', file);
-
-        if (buffer[i] == '\n')
-            fputs("\\n \n", file);
-
-        if (buffer[i] == '\0')
-            fprintf(file, "0\n");
-    }
-        
+void OutPutBuf(char* buffer, FILE* fileout, size_t numOfElemNew) {
+    for (size_t i = 0; i < numOfElemNew; i++) 
+        fputc(buffer[i]? buffer[i] : '\n', fileout);
 
 }
 
@@ -126,6 +118,41 @@ size_t Maxlen(char* buffer) {
     printf("MaxLen = %d\n", maxlen);
 
     return (size_t) maxlen;
+}
+
+void CreateArrPoint(String_t* arr_pointer, char* buffer) {
+    assert(arr_pointer);
+    assert(buffer);
+
+    char* str_char = strchr(buffer, '\n');
+    // printf("%p\n", str_char);
+    // printf("%ld\n", str_char - buffer);
+
+    int i = 0; // Для того чтобы первый был null
+
+    for (; str_char != NULL; i++){
+
+        *str_char = '\0';
+        
+        (arr_pointer + i) -> str = buffer;
+        (arr_pointer + i) -> str_end = str_char - 1;
+        
+        str_char += 1;
+
+        while (*str_char == '\n') {
+            str_char++;
+        }
+
+        buffer = str_char;
+        str_char = strchr(buffer, '\n');
+        // printf("Pointer [%d] %p\n", i, buffer);
+
+    }
+    
+    str_char = strchr(buffer, '\0');
+
+    arr_pointer[i].str = buffer;
+    arr_pointer[i].str_end = str_char - 1;
 }
 
 char* skip_space(char* buffer)
