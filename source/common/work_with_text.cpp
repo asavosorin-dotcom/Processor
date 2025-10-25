@@ -124,10 +124,10 @@ void CreateArrPoint(String_t* arr_pointer, char* buffer) {
     assert(arr_pointer);
     assert(buffer);
 
-    char* str_char = strchr(buffer, '\n');
-    // printf("%p\n", str_char);
-    // printf("%ld\n", str_char - buffer);
+    // PRINT_DEBUG(BOLD_BLUE, "buffer[0] = %c\n", buffer[0]);
 
+    char* str_char = strchr(buffer, '\n');
+    
     int i = 0; // Для того чтобы первый был null
 
     for (; str_char != NULL; i++){
@@ -162,4 +162,14 @@ char* skip_space(char* buffer)
         }
 
     return buffer;
+}
+
+char* skip_space_end(char* buffer_left, char* buffer_right)
+{
+    while (isspace(*buffer_right)) {
+            buffer_right--;
+        }
+
+    buffer_right[1] = '\0';
+    return buffer_left;
 }

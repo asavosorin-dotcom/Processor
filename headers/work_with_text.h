@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "colors.h"
+
 typedef struct { 
     char* str;
     char* str_end;
@@ -38,8 +40,11 @@ void   OutPutBuf(char* buffer, FILE* fileout, size_t numOfElemNew);
 void CreateArrPoint(String_t* arr_pointer, char* buffer);
 
 char* skip_space(char* buffer);
+char* skip_space_end(char* buffer_left, char* buffer_right);
 
 Buffer CreateBuffer(const char* filename);
 BufferBin CreateBufferBinary(const char* filename);
+
+#define PRINT_DEBUG(COLOR, ...) printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET)
 
 #endif

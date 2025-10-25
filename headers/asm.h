@@ -35,7 +35,9 @@ typedef struct {
 } Assembler_t;
 
 typedef struct {
-    char*   buffer;
+    String_t*   arr_string;
+    int         count_string;
+
     int     count_element;
     Stack_t stack;
     char* cmdStr;
@@ -50,14 +52,13 @@ void CompileDtor(Compile_t* compile_struct);
 
 size_t CountHash(const char* string);
 
-int Assembler_Push         (Compile_t* compile_struct);
-int Assembler_Write_label  (Assembler_t* assembler, Compile_t* compile_struct);
-int Assembler_Jump         (Assembler_t* assembler, Compile_t* compile_struct);
-int Assembler_Register_Arg (Compile_t* compile_struct);
-int Assembler_RAM          (Compile_t* compile_struct);
-int Assembler_get_arg      (Assembler_t* assembler, Compile_t* compile_struct, int command_index);
-
-int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_command);
+int Assembler_Push           (Compile_t* compile_struct, char* string_assembler);
+int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct, char* string_assembler);
+int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_command, char* string_assembler);
+int Assembler_Register_Arg   (Compile_t* compile_struct, char* string_assembler);
+int Assembler_RAM            (Compile_t* compile_struct, char* string_assembler);
+int Assembler_get_arg        (Assembler_t* assembler, Compile_t* compile_struct, int command_index, char* string_assembler);
+int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct, char* string_assembler);
 
 #ifdef DEBUG_ASSEMBLER
     #define ONDEBUGASM(func) func
@@ -65,7 +66,7 @@ int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_
     #define ONDEBUGASM(func)
 #endif
 
-#define PRINT_DEBUG(COLOR, ...) ONDEBUGASM(printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET))
+// #define PRINT_DEBUG(COLOR, ...) ONDEBUGASM(printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET))
 
 #define BREAK if (err) break;
 

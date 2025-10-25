@@ -11,47 +11,63 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
     Compile_t compile_struct = {};
     CompileCtor(commandfile, &compile_struct);
 
-    char* buf_for_free = compile_struct.buffer;
-
-    compile_struct.buffer++;
-
     int err = 0;
-
+    int index_string = 0;
+ 
     while (1) {
-        compile_struct.buffer = skip_space(compile_struct.buffer);
+        PRINT_DEBUG(BOLD_CYAN, "INDEX_STRING = %d\n\n", index_string);
 
-        sscanf(compile_struct.buffer, "%s", compile_struct.cmdStr); //Проверка на scanf        
-        // ONDEBUGASM(fprintf(stdout, "%s:%d: compile_struct->cmdStr = %s\n", __FILE__, __LINE__, compile_struct.cmdStr));
+        compile_struct.arr_string[index_string].str = skip_space_end(compile_struct.arr_string[index_string].str, compile_struct.arr_string[index_string].str_end);
+        char* string_assembler = skip_space(compile_struct.arr_string[index_string].str);
+
+        if (string_assembler[0] == '\0' || string_assembler[0] == ';')
+        {
+            index_string++;
+            continue;
+        }
+
+        PRINT_DEBUG(BOLD_CYAN, "string[%d] = [%s]\n", index_string, string_assembler);
+
+        sscanf(string_assembler, "%s", compile_struct.cmdStr);      
+        ONDEBUGASM(fprintf(stdout, "%s:%d: compile_struct->cmdStr = %s\n", __FILE__, __LINE__, compile_struct.cmdStr));
         
         if (compile_struct.cmdStr[0] == ':') 
         {
-            err = Assembler_Write_label(assembler, &compile_struct);
+            err = Assembler_Write_label(assembler, &compile_struct, string_assembler);
+            index_string++;
             BREAK
+            continue;
         }
 
         int command_index = 0;
-        err = Assembler_Search_Command(&compile_struct, &command_index, arr_command);
+        err = Assembler_Search_Command(&compile_struct, &command_index, arr_command, string_assembler);
         
         BREAK
 
-        compile_struct.buffer += arr_command[command_index].command_size;
+        fprintf(file_listing, "%3d:       %-8d%-8s\n" , compile_struct.count_element, arr_command[command_index].command_code, string_assembler);
+        string_assembler += arr_command[command_index].command_size;
 
-        fprintf(file_listing, "%3d:       %-8d%-8s\n" , compile_struct.count_element, arr_command[command_index].command_code, arr_command[command_index].command_name);
 
-        // PRINT_DEBUG(BOLD_BLUE, "\ncommand_name = [%s]\n", arr_command[command_index].command_name);
-        // PRINT_DEBUG(MAGENTA,"\ncommand_hash = [%zu]\n", arr_command[command_index].command_hash);
-        // PRINT_DEBUG(GREEN,  "command_code = [%d]\n\n", arr_command[command_index].command_code);
+        PRINT_DEBUG(BOLD_BLUE, "\ncommand_name = [%s]\n", arr_command[command_index].command_name);
+        PRINT_DEBUG(MAGENTA,"\ncommand_hash = [%zu]\n", arr_command[command_index].command_hash);
+        PRINT_DEBUG(GREEN,  "command_code = [%d]\n\n", arr_command[command_index].command_code);
+
         PUSH(compile_struct.stack, arr_command[command_index].command_code);
         
-        err = Assembler_get_arg(assembler, &compile_struct, command_index);
+        err = Assembler_get_arg(assembler, &compile_struct, command_index, string_assembler);
 
-        BREAK
-
-        compile_struct.buffer = strchr(compile_struct.buffer, '\n');
         
-        if (compile_struct.buffer == NULL)
-            break;
+        // BREAK
+        
+        index_string++;
+        
+        PRINT_DEBUG(BOLD_MAGENTA, " after get_arg\n");
 
+        PRINT_DEBUG(BOLD_MAGENTA, "count_string = [%d]\n", compile_struct.count_string);
+
+        if (index_string == compile_struct.count_string)
+            break;
+        
         // int c = getchar();
     }
 
@@ -64,7 +80,8 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
 
     WriteBiteCodeFile(bitecode, compile_struct.stack.data, compile_struct.count_element);
     
-    free(buf_for_free);
+    // PRINT_DEBUG(BOLD_MAGENTA, "arr_string[0] = [%c]")
+    free(compile_struct.arr_string[0].str - 1); 
     CompileDtor(&compile_struct);
     if (bitecode) fclose(bitecode);
     // return stack.data;
@@ -73,12 +90,22 @@ void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_com
 void CompileCtor(const char* commandfile, Compile_t* compile_struct)
 {
     Buffer struct_buffer = CreateBuffer(commandfile);
+    compile_struct->count_string = (int) CountStr(struct_buffer.buff + 1);
     
+    String_t* arr_string= (String_t* ) calloc(compile_struct->count_string + 1, sizeof(String_t));
+
+    // PRINT_DEBUG(BOLD_YELLOW, "с = %c\n", struct_buffer.buff[1]);
+
+    CreateArrPoint(arr_string, struct_buffer.buff + 1);
+
+
     INITSTACK(compile_struct->stack, 7);
 
-    compile_struct->buffer = struct_buffer.buff;
+    compile_struct->arr_string = arr_string;
     compile_struct->count_element = 0;
     compile_struct->cmdStr = (char* ) calloc(30, sizeof(char));
+
+    // free(struct_buffer.buff);
 }
 
 void CompileDtor(Compile_t* compile_struct)
@@ -87,14 +114,12 @@ void CompileDtor(Compile_t* compile_struct)
     DTOR(compile_struct->stack);
 }
 
-int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct)
+int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct, char* string_assembler)
 {
     #ifdef DEBUG_ASSEMBLER
             printf("label = %s\n", compile_struct->cmdStr);
-            printf("buffer[0] = %c, buffer[1] = %c\n", compile_struct->buffer[0], compile_struct->buffer[1]);
+            // printf("buffer[0] = %c, buffer[1] = %c\n", compile_struct->buffer[0], compile_struct->buffer[1]);
     #endif
-
-    compile_struct->buffer++;
 
     #ifdef DEBUG_ASSEMBLER
         // printf("%d\n", sscanf(buffer, "%d", &assembler->label.->label_name));
@@ -102,7 +127,7 @@ int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct
     #endif
 
     char label_name[30] = "";
-    if (sscanf(compile_struct->buffer, "%s", label_name) != 1)
+    if (sscanf(string_assembler, "%s", label_name) != 1)
     {
         printf(BOLD_RED "Error reading label name\n");
         return ERR;
@@ -118,16 +143,14 @@ int Assembler_Write_label    (Assembler_t* assembler,  Compile_t* compile_struct
     #endif
 
     assembler->label_index++;
-    compile_struct->buffer = strchr(compile_struct->buffer, '\n');
-
-    compile_struct->buffer = skip_space(compile_struct->buffer);
-
-    ONDEBUGASM(printf("str_after_label = [%.20s]\n", compile_struct->buffer));
+    
+    // ONDEBUGASM(printf("str_after_label = [%.20s]\n", compile_struct->buffer));
 
     return OK;
 }
 
-int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_command)
+int Assembler_Search_Command (Compile_t* compile_struct, int* command_index, Command_t* arr_command, char* string_assembler)
+
 {    
     // #ifdef DEBUG_ASSEMBLER
     //     printf(BOLD_GREEN "----------------------------------------------------------------------------------------\nIn Search_Commnad\n");
@@ -135,39 +158,38 @@ int Assembler_Search_Command (Compile_t* compile_struct, int* i, Command_t* arr_
     //     printf("----------------------------------------------------------------------------------------\n" RESET);
     // #endif
     
-    sscanf(compile_struct->buffer, "%s", compile_struct->cmdStr); 
-    // ONDEBUGASM(fprintf(stdout, "\ncompile_struct.cmdStr_after_label = %s\n", compile_struct->cmdStr));
+    sscanf(string_assembler, "%s", compile_struct->cmdStr); 
+    ONDEBUGASM(fprintf(stdout, "\ncompile_struct.cmdStr = %s\n", compile_struct->cmdStr));
     
-    for (*i = 0;CountHash(compile_struct->cmdStr) != arr_command[*i].command_hash ; (*i)++) 
+    for (*command_index = 0; CountHash(compile_struct->cmdStr) != arr_command[*command_index].command_hash ; (*command_index)++) 
     {
-        // ONDEBUGASM(printf(BOLD_GREEN "i = %d\n" RESET, *i));
-        // PRINT_DEBUG(BOLD_GREEN, "arr_command[%d] = %s\n", *i, arr_command[*i].command_name);
+        // ONDEBUGASM(printf(BOLD_GREEN "commad_index = %d\n" RESET, *command_index));
+        // PRINT_DEBUG(BOLD_GREEN, "arr_command[%d] = %s\n", *command_index, arr_command[*command_index].command_name);
 
-        if (*i == num_command - 2)
+        if (*command_index == num_command - 2)
         {
             printf(BOLD_RED "\nUnknown command: %s!!!\n\n" RESET, compile_struct->cmdStr);
             return ERR;
         }
     }
 
-    compile_struct->buffer = skip_space(compile_struct->buffer);
     compile_struct->count_element++;
 
     return OK;    
 }
 
-int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct)
+int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct, char* string_assembler)
 
 {
-    compile_struct->buffer = skip_space(compile_struct->buffer);
+    string_assembler = skip_space(string_assembler);
 
     char jmp_arg[40] = ""; 
-    sscanf(compile_struct->buffer, "%s", jmp_arg);
+    sscanf(string_assembler, "%s", jmp_arg);
 
     char label_name[40] = "";
 
     if (jmp_arg[0] == ':')
-        sscanf(compile_struct->buffer + 1, "%s", label_name);
+        sscanf(string_assembler + 1, "%s", label_name);
     else
         return ERR;
 
@@ -189,7 +211,7 @@ int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct)
         printf("index_in_label = %d\n", i);
         printf("elem = %d\n", assembler->label[i].label_value);
         printf("label_name = %d\n", assembler->label[i].label_hash);
-        printf("\nEND_OF_JUMP\n------------------------------------------------------------------\n"RESET);
+        printf("\nEND_OF_JUMP\n------------------------------------------------------------------\n" RESET);
     #endif
 
     PUSH(compile_struct->stack, assembler->label[i].label_value);
@@ -198,12 +220,12 @@ int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct)
     return OK;
 }
 
-int Assembler_Register_Arg   (Compile_t* compile_struct)
+int Assembler_Register_Arg   (Compile_t* compile_struct, char* string_assembler)
 {
-    compile_struct->buffer = skip_space(compile_struct->buffer);
+    string_assembler = skip_space(string_assembler);
 
     char name[10] = ""; 
-    if (sscanf(compile_struct->buffer, "%s", name) != 1) return ERR;
+    if (sscanf(string_assembler, "%s", name) != 1) return ERR;
 
     if (name[0] != 'R' || name[2] != 'X') 
     {
@@ -215,19 +237,19 @@ int Assembler_Register_Arg   (Compile_t* compile_struct)
 
     PUSH(compile_struct->stack, name[1] - 'A' + 1);
 
-    compile_struct->buffer += 4;
+    // string_assembler += 4;
     compile_struct->count_element++;
 
     return OK;
 }
 
-int Assembler_RAM            (Compile_t* compile_struct)
+int Assembler_RAM            (Compile_t* compile_struct, char* string_assembler)
 {
-    compile_struct->buffer = skip_space(compile_struct->buffer);
+    string_assembler = skip_space(string_assembler);
 
     char name[10] = ""; 
-    sscanf(compile_struct->buffer, "%s", name);
-    ONDEBUGASM(printf(BOLD_RED "name in popm = %.20s\n" RESET, compile_struct->buffer));
+    sscanf(string_assembler, "%s", name);
+    // ONDEBUGASM(printf(BOLD_RED "name in popm = %.20s\n" RESET, compile_struct->buffer));
 
     if (name[0] !=  '[')
     {
@@ -236,24 +258,24 @@ int Assembler_RAM            (Compile_t* compile_struct)
 
     fprintf(fileerr, "register name[1] - A = %d\n", name[2] - 'A');
     PUSH(compile_struct->stack, name[2] - 'A' + 1);
-    compile_struct->buffer += 6;
+    // compile_struct->buffer += 6;
 
     compile_struct->count_element++;
 
     return OK;
 }
 
-int Assembler_Push           (Compile_t* compile_struct)
+int Assembler_Push           (Compile_t* compile_struct, char* string_assembler)
 {
     int elem = 0;
     
     // PRINT_DEBUG(BLUE, "buffer_before_skip = %.10s\n", compile_struct->buffer);
     
-    compile_struct->buffer = skip_space(compile_struct->buffer);
+    string_assembler = skip_space(string_assembler);
             
-    ONDEBUGASM(printf("string = [%.10s] \n", compile_struct->buffer));
+    PRINT_DEBUG(BOLD_CYAN, "string_assembler = [%s]\n", string_assembler);
 
-    if (sscanf(compile_struct->buffer, TYPEELEM, &elem) != 1) 
+    if (sscanf(string_assembler, TYPEELEM, &elem) != 1) 
         {
         printf(RED "\nError read arg in push\n" RESET);
         return ERR;
@@ -267,16 +289,17 @@ int Assembler_Push           (Compile_t* compile_struct)
     return OK;
 }
 
-int Assembler_get_arg       (Assembler_t* assembler, Compile_t* compile_struct, int command_index)
+int Assembler_get_arg       (Assembler_t* assembler, Compile_t* compile_struct, int command_index, char* string_assembler)
 {
     int err = 0;
 
+    // PRINT_DEBUG(BOLD_MAGENTA, " in get_arg\n");
     if (command_index == PUSH_G) { 
-            Assembler_Push(compile_struct);
+            Assembler_Push(compile_struct, string_assembler);
         }
         
         if (command_index >= JB_G && command_index <= CALL_G) {
-            err = Assembler_Jump(assembler, compile_struct);
+            err = Assembler_Jump(assembler, compile_struct, string_assembler);
 
             if (err)
             {
@@ -286,11 +309,11 @@ int Assembler_get_arg       (Assembler_t* assembler, Compile_t* compile_struct, 
         }
 
         else if (command_index == PUSHR_G || command_index == POPR_G) { 
-            Assembler_Register_Arg(compile_struct);
+            Assembler_Register_Arg(compile_struct, string_assembler);
         }
 
         else if (command_index == PUSHM_G || command_index == POPM_G) { 
-            err = Assembler_RAM(compile_struct);
+            err = Assembler_RAM(compile_struct, string_assembler);
 
             if (err)
             {
@@ -298,6 +321,8 @@ int Assembler_get_arg       (Assembler_t* assembler, Compile_t* compile_struct, 
                 return ERR;
             }
         }
+
+    // PRINT_DEBUG(BOLD_MAGENTA, " in get_arg\n");
 
     return OK;
 }
