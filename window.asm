@@ -1,18 +1,12 @@
 IN ; radius
-PUSH 5
-MUL
 
 IN ; x0
-PUSH 5
-MUL
 POPR RGX
 
 IN ; y0
-PUSH 6
-MUL
 POPR RIX
 
-PUSH 51 ; длина строки
+PUSH 900 ; длина строки
 POPR RHX
 
 POPR RAX
@@ -20,12 +14,10 @@ POPR RAX
 PUSH 0
 POPR RDX ; cчетчик
 
-;afbffdab
-
 :cir
 
 PUSHR RDX 
-PUSH 3000 ; количество ячеек
+PUSH 2430000; количество ячеек
 
 JAE :end
 
@@ -44,23 +36,39 @@ ADD
 PUSHR RAX
 CALL :pow
 
-JA :dot
+JA :empty
 
-PUSH 42
+PUSH 140
+POPM [RDX]
+CALL :inc
+
+PUSH 81
+POPM [RDX]
+CALL :inc
+
+PUSH 83
 POPM [RDX]
 CALL :inc
 
 J :cir
 
-:dot
-    PUSH 46
+:empty
+    PUSH 49
+    POPM [RDX]
+    CALL :inc
+
+    PUSH 56
+    POPM [RDX]
+    CALL :inc
+
+    PUSH 66
     POPM [RDX]
     CALL :inc
 
 J :cir
 
 :end
-    DRAW
+    DRAWWIND
     HLT
 
 :inc         ;увеличение счетчика на 1
@@ -72,18 +80,18 @@ J :cir
 
 :x
     PUSHR RDX
+    PUSH 3
+    DIV
     PUSHR RHX
     REM
-    PUSH 5
-    MUL
     RET
 
 :y
     PUSHR RDX
+    PUSH 3
+    DIV
     PUSHR RHX
     DIV
-    PUSH 6
-    MUL
     RET
 
 :pow

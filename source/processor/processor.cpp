@@ -19,11 +19,11 @@ void Processor (Processor_t* processor, Processor_command_t* arr_command)
             #ifdef DEBUG
             printf("[%d]", command_counter);
             PRINTSTACK(processor->stack);
-            PrintArr(processor->RAM, 100);
-            int c = getchar();
+            PrintArr  (processor->RAM, 100);
             command_counter++;
+            int c = getchar();
             #endif
-
+            
         }
 }
 
@@ -233,7 +233,7 @@ int ProcessorRet   (Processor_t* processor)
     int err = 0; 
     
     StackElement_t adress = 0;
-    err = POP(processor->ReturnStack, adress);
+    err = POP(processor->ReturnStack, adress);.
     processor->counter = adress;
 
     ONDEBUGPROC(printf(BLUE "return adress = %d\n" RESET, adress));
@@ -307,22 +307,48 @@ int ProcessorJump (Processor_t* processor)
 }
 //------------------------------------------------------------------------------------------------------------------------------------
                                  
-int ProcessorDraw (Processor_t* processor)
+int ProcessorDrawConsole (Processor_t* processor)
 {
     // txCreateWindow(1000, 1000);
+    // txSetPixel(100, 100, RGB (255, 128, 0));
     
     int err = 0;
     
     for (size_t i = 0; i < processor->RAM_size; i++)
     {
-        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_RED "%c " RESET, processor->RAM[i]);
+        if (processor->RAM[i] == '*') fprintf(stdout, BOLD_BLUE "%c " RESET, processor->RAM[i]);
         else                          fprintf(stdout, "%c ", processor->RAM[i]);
 
-        // printf("%d\n", i);
+        // printf("\n");
 
         if ((i + 1) % DRAW_STRING == 0) fprintf(stdout, "\n");
     }
 
+    // txSleep(1000);
+    processor->counter++;
+    return err;
+}
+
+int ProcessorDrawWindow (Processor_t* processor)
+{
+    int err = 0;
+    
+    int window_x = 900;
+    int window_y = 900;
+
+    txCreateWindow(window_x, window_y);
+    
+    
+    for (size_t i = 0; i < processor->RAM_size - 3; i += 3)
+    {
+        // int c = getchar();
+        double x = ((i / 3) % window_x);
+        double y = ((i / 3) / window_x);
+        txSetPixel(x , y, RGB (processor->RAM[i], processor->RAM[i + 1], processor->RAM[i + 2]));
+        // fprintf(stdout, "[%d] %d %d %d\n", i, processor->RAM[i], processor->RAM[i + 1], processor->RAM[i + 2]);
+    }
+
+    txSleep(10000);
     processor->counter++;
     return err;
 }

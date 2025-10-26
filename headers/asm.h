@@ -1,7 +1,7 @@
 #ifndef ASM_H
 #define ASM_H
 
-// #include "TXLib.h"
+#include "TXLib.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -14,6 +14,7 @@
 #define LABEL_SIZE 10
 
 // #define DEBUG_ASSEMBLER
+#define DEBUG_LABEL
 
 typedef struct {
     size_t label_hash;
@@ -45,7 +46,7 @@ typedef struct {
 
 void Compile(const char* commandfile, Assembler_t* assrembler, Command_t* arr_command);
 
-void WriteBiteCodeFile(FILE* bitecode, StackElement_t* arr, size_t count_element);
+void WriteByteCodeFile(FILE* bytecode, StackElement_t* arr, size_t count_element);
 
 void CompileCtor(const char* commandfile, Compile_t* compile_struct);
 void CompileDtor(Compile_t* compile_struct);
@@ -66,7 +67,7 @@ int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct,
     #define ONDEBUGASM(func)
 #endif
 
-// #define PRINT_DEBUG(COLOR, ...) ONDEBUGASM(printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET))
+#define PRINT_DEBUG(COLOR, ...) ONDEBUGASM(printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET))
 
 #define BREAK if (err) break;
 

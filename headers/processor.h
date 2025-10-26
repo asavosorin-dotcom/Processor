@@ -1,7 +1,7 @@
 #ifndef CALC_H
 #define CALC_H
 
-// #include "TXLib.h"
+#include "TXLib.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,29 +33,30 @@ typedef struct {
 
 void PrintArr        (int* arr, int number_of_elem);
 
-int ProcessorPush    (Processor_t* processor);
-int ProcessorOut     (Processor_t* processor);
-int ProcessorAdd     (Processor_t* processor);
-int ProcessorSub     (Processor_t* processor);
-int ProcessorMul     (Processor_t* processor);
-int ProcessorDiv     (Processor_t* processor);
-int ProcessorSqr     (Processor_t* processor);
-int ProcessorRemdiv  (Processor_t* processor);
-int ProcessorIn      (Processor_t* processor);
-int ProcessorPopr    (Processor_t* processor);
-int ProcessorPushr   (Processor_t* processor);
-int ProcessorJump    (Processor_t* processor); 
-int ProcessorJump_B  (Processor_t* processor);
-int ProcessorJump_BE (Processor_t* processor);
-int ProcessorJump_A  (Processor_t* processor);
-int ProcessorJump_AE (Processor_t* processor);
-int ProcessorJump_E  (Processor_t* processor);
-int ProcessorJump_NE (Processor_t* processor);
-int ProcessorCall    (Processor_t* processor);
-int ProcessorRet     (Processor_t* processor);
-int ProcessorPushm   (Processor_t* processor);
-int ProcessorPopm    (Processor_t* processor);
-int ProcessorDraw    (Processor_t* processor);
+int ProcessorPush        (Processor_t* processor);
+int ProcessorOut         (Processor_t* processor);
+int ProcessorAdd         (Processor_t* processor);
+int ProcessorSub         (Processor_t* processor);
+int ProcessorMul         (Processor_t* processor);
+int ProcessorDiv         (Processor_t* processor);
+int ProcessorSqr         (Processor_t* processor);
+int ProcessorRemdiv      (Processor_t* processor);
+int ProcessorIn          (Processor_t* processor);
+int ProcessorPopr        (Processor_t* processor);
+int ProcessorPushr       (Processor_t* processor);
+int ProcessorJump        (Processor_t* processor); 
+int ProcessorJump_B      (Processor_t* processor);
+int ProcessorJump_BE     (Processor_t* processor);
+int ProcessorJump_A      (Processor_t* processor);
+int ProcessorJump_AE     (Processor_t* processor);
+int ProcessorJump_E      (Processor_t* processor);
+int ProcessorJump_NE     (Processor_t* processor);
+int ProcessorCall        (Processor_t* processor);
+int ProcessorRet         (Processor_t* processor);
+int ProcessorPushm       (Processor_t* processor);
+int ProcessorPopm        (Processor_t* processor);
+int ProcessorDrawConsole (Processor_t* processor);
+int ProcessorDrawWindow  (Processor_t* processor);
 
 void Processor(Processor_t* processor, Processor_command_t* arr_command);
 

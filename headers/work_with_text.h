@@ -45,6 +45,6 @@ char* skip_space_end(char* buffer_left, char* buffer_right);
 Buffer CreateBuffer(const char* filename);
 BufferBin CreateBufferBinary(const char* filename);
 
-#define PRINT_DEBUG(COLOR, ...) printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET)
+// #define PRINT_DEBUG(COLOR, ...) printf(COLOR "%s:%d ", __FILE__, __LINE__); printf(__VA_ARGS__); printf(RESET)
 
 #endif
