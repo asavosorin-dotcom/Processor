@@ -8,9 +8,8 @@ int main(int /*argc*/, char* argv[]) {
     Assembler_t assembler = {};
     AssemblerCtor(&assembler);
 
-    Command_t* arr_command = (Command_t* ) calloc(50, sizeof(Command_t));
+    Command_t* arr_command = (Command_t* ) calloc(ARR_COMMAND_SIZE, sizeof(Command_t));
     Assembler_Init_arr_command(arr_command);
-
 
     char* commandfile = argv[1];
     Compile(commandfile, &assembler, arr_command);
@@ -41,6 +40,7 @@ void AssemblerCtor(Assembler_t* assembler)
         assembler->label[i] = {0, -1};
     }
     
+    assembler->label_size = LABEL_SIZE;
     assembler->label_index = 0;
     assembler->label_count = 0;
 }

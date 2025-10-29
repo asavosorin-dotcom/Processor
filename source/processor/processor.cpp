@@ -233,7 +233,7 @@ int ProcessorRet   (Processor_t* processor)
     int err = 0; 
     
     StackElement_t adress = 0;
-    err = POP(processor->ReturnStack, adress);.
+    err = POP(processor->ReturnStack, adress);
     processor->counter = adress;
 
     ONDEBUGPROC(printf(BLUE "return adress = %d\n" RESET, adress));
