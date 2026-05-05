@@ -23,5 +23,4 @@ HLT
 
     MUL
     :5
-    RET
-    
+    RET    

@@ -1,7 +1,7 @@
 #ifndef ASM_H
 #define ASM_H
 
-#include "TXLib.h"
+// #include "TXLib.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -12,7 +12,7 @@
 #include "colors.h"
 #include "commands_code.h"
 
-#define LABEL_SIZE 10
+#define LABEL_SIZE 50
 
 // #define DEBUG_ASSEMBLER
 // #define DEBUG_LABEL
