@@ -26,7 +26,7 @@ int main(int /*argc*/, char* argv[]) {
     // }
 
     fclose(fileerr);
-    printf(BOLD_GREEN "\nSUCCES!\n" RESET);
+    // printf(BOLD_GREEN "\nSUCCES!\n" RESET);
     free(arr_command);
     if (file_listing) fclose(file_listing);
 

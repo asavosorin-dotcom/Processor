@@ -22,7 +22,7 @@ int main() {
     ProcessorDtor(&processor);
     fclose(fileerr);
     free(arr_command);
-    printf(BOLD_GREEN "\nSUCCES!\n" RESET);
+    // printf(BOLD_GREEN "\nSUCCES!\n" RESET);
 }
 
 void ProcessorCtor(Processor_t* processor) 

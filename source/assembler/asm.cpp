@@ -211,7 +211,7 @@ int Assembler_Jump           (Assembler_t* assembler, Compile_t* compile_struct,
     else
         return ERR;
 
-    printf("%s\n", label_name); 
+    // printf("%s\n", label_name); 
     // printf(RED "label_index = %d\n" RESET, assembler->label_index);
 
     size_t label_hash = CountHash(label_name);
