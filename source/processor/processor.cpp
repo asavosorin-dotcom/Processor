@@ -92,6 +92,11 @@ int ProcessorOut   (Processor_t* processor)
                                                                           \
     return err;                                                           \
 }
+
+IMPL_BASE_OP(Add, +)
+IMPL_BASE_OP(Sub, -)
+IMPL_BASE_OP(Mul, *)
+
 //----------------------------------------------------------------------------------------------------------------------------------
 
 int ProcessorDiv   (Processor_t* processor) 
@@ -139,10 +144,6 @@ int ProcessorRemdiv   (Processor_t* processor)
                                                                           
     return err;                                                           
 }
-
-IMPL_BASE_OP(Add,    +)
-IMPL_BASE_OP(Sub,    -)
-IMPL_BASE_OP(Mul,    *) // 3 параметр, подставляющий if 
 
 int ProcessorSqr   (Processor_t* processor) 
 {    
@@ -336,7 +337,7 @@ int ProcessorDrawWindow (Processor_t* processor)
     int window_x = 900;
     int window_y = 900;
 
-    txCreateWindow(window_x, window_y);
+    // txCreateWindow(window_x, window_y);
     
     
     for (size_t i = 0; i < processor->RAM_size - 3; i += 3)
@@ -344,11 +345,11 @@ int ProcessorDrawWindow (Processor_t* processor)
         // int c = getchar();
         double x = ((i / 3) % window_x);
         double y = ((i / 3) / window_x);
-        txSetPixel(x , y, RGB (processor->RAM[i], processor->RAM[i + 1], processor->RAM[i + 2]));
+        // txSetPixel(x , y, RGB (processor->RAM[i], processor->RAM[i + 1], processor->RAM[i + 2]));
         // fprintf(stdout, "[%d] %d %d %d\n", i, processor->RAM[i], processor->RAM[i + 1], processor->RAM[i + 2]);
     }
 
-    txSleep(10000);
+    // txSleep(10000);
     processor->counter++;
     return err;
 }

@@ -1,7 +1,7 @@
 #ifndef CALC_H
 #define CALC_H
 
-#include "TXLib.h"
+// #include "TXLib.h"
 
 #include <stdio.h>
 #include <stdlib.h>

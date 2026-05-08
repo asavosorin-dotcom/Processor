@@ -1,6 +1,6 @@
 #include "mainproc.h"
 
-#define RAM_SIZE 3000000
+#define RAM_SIZE 3000
 
 FILE* fileerr = fopen("Logfile1.log", "w");
 FILE* fileout = fopen("Fileout.txt", "w");
