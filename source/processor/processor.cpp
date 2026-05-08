@@ -1,4 +1,4 @@
-#include "processor.h"
+#include "../../headers/processor.h"
 
 #define DRAW_STRING 51
 

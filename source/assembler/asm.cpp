@@ -1,4 +1,4 @@
-#include "asm.h"
+#include "../../headers/asm.h"
 
 void Compile(const char* commandfile, Assembler_t* assembler, Command_t* arr_command) 
 {

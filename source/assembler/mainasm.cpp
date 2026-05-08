@@ -1,4 +1,4 @@
-#include "mainasm.h"
+#include "../../headers/mainasm.h"
 
 FILE* fileerr      = fopen("Logfile.log", "w");
 FILE* file_listing = fopen("file_listing.txt", "w");
